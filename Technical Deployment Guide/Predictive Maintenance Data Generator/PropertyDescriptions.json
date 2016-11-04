@@ -1,0 +1,22 @@
+﻿{
+    "EventHubName": {
+        "Title": "Azure Event Hub",
+        "Description": "The name of the event hub to recieve the messages from the data generator."
+    },
+    "EventHubConnectionString": {
+        "Title": "Event Hub Connection String",
+        "Description": "The connection string to the service bus containing the event hub."
+    },
+    "StorageAccountConnectionString": {
+        "Title": "Azure Storage Connection String",
+        "Description": "The connection string to an Azure Storage service"
+    },
+    "AMLEndpointURL": {
+        "Title": "AML Endpoint URL",
+        "Description": "URL for AML web service"
+    },
+    "AMLKey": {
+        "Title": "AML Endpoint API Key",
+        "Description": "API key for AML web service"
+    }
+}

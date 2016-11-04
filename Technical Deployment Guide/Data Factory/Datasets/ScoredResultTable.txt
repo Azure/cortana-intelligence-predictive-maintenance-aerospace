@@ -1,0 +1,69 @@
+{
+    "name": "ScoredResultTable",
+    "properties": {
+        "structure": [
+            {
+                "name": "Id",
+                "type": "String"
+            },
+            {
+                "name": "Cycle",
+                "type": "String"
+            },
+            {
+                "name": "Rul",
+                "type": "String"
+            }
+        ],
+        "published": false,
+        "type": "AzureBlob",
+        "linkedServiceName": "StorageLinkedService",
+        "typeProperties": {
+            "fileName": "scoredresult.csv",
+            "folderPath": "maintenancesadata/scoredresult/date={Year}-{Month}-{Day}/hour={Hour}/",
+            "format": {
+                "type": "TextFormat",
+                "columnDelimiter": ","
+            },
+            "partitionedBy": [
+                {
+                    "name": "Year",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "yyyy"
+                    }
+                },
+                {
+                    "name": "Month",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "MM"
+                    }
+                },
+                {
+                    "name": "Day",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "dd"
+                    }
+                },
+                {
+                    "name": "Hour",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "HH"
+                    }
+                }
+            ]
+        },
+        "availability": {
+            "frequency": "Hour",
+            "interval": 3,
+            "style": "StartOfInterval"
+        }
+    }
+}

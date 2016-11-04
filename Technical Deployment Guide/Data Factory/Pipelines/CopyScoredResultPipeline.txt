@@ -1,0 +1,51 @@
+{
+    "name": "CopyScoredResultPipeline",
+    "properties": {
+        "description": "Copy predication to Sql Azure",
+        "activities": [
+            {
+                "type": "Copy",
+                "typeProperties": {
+                    "source": {
+                        "type": "BlobSource",
+                        "treatEmptyAsNull": true,
+                        "skipHeaderLineCount": 1
+                    },
+                    "sink": {
+                        "type": "SqlSink",
+                        "sqlWriterStoredProcedureName": "sp_loadScoreResult",
+                        "sqlWriterTableType": "PMResultType",
+                        "writeBatchSize": 0,
+                        "writeBatchTimeout": "01:00:00"
+                    }
+                },
+                "inputs": [
+                    {
+                        "name": "ScoredResultTable"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "SQLScoredResultTable"
+                    }
+                ],
+                "policy": {
+                    "timeout": "10:00:00",
+                    "concurrency": 1,
+                    "retry": 3
+                },
+                "scheduler": {
+                    "frequency": "Hour",
+                    "interval": 3,
+                    "style": "StartOfInterval"
+                },
+                "name": "CopyMLResulttoSqlAzure",
+                "description": "Copy ML result table to Sql Azure"
+            }
+        ],
+        "start": "Activity Period UTC, i.e. - 2016-03-15T12:00:00Z",
+        "end": "Activity Period UTC, i.e. - 2016-03-16T17:00:00Z", 
+        "isPaused": false,
+        "pipelineMode": "Scheduled"
+    }
+}

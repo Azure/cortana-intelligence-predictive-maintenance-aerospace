@@ -1,0 +1,23 @@
+{
+    "name": "HDInsightLinkedService",
+    "properties": {
+        "type": "HDInsightOnDemand",
+        "typeProperties": {
+            "version": null,
+            "clusterSize": 1,
+            "timeToLive": "03:00:00",
+            "jobsContainer": "adfjobs",
+            "coreConfiguration": {},
+            "hBaseConfiguration": {},
+            "hdfsConfiguration": {},
+            "hiveConfiguration": {},
+            "mapReduceConfiguration": {},
+            "oozieConfiguration": {},
+            "sparkConfiguration": {},
+            "stormConfiguration": {},
+            "yarnConfiguration": {},
+            "additionalLinkedServiceNames": [],
+            "linkedServiceName": "HDInsightStorageLinkedService"
+        }
+    }
+}

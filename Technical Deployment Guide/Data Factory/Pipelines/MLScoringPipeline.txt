@@ -1,0 +1,107 @@
+{
+    "name": "MLScoringPipeline",
+    "properties": {
+        "description": "This is pipeline call ML scoring to make prediction",
+        "activities": [
+            {
+                "type": "HDInsightHive",
+                "typeProperties": {
+                    "scriptPath": "maintenancesascript\\script\\hive\\PrepareMLInput.hql",
+                    "scriptLinkedService": "StorageLinkedService",
+                    "defines": {
+                        "AGGREGATEDINPUT": "wasb://maintenancesadata@<accountname>.blob.core.windows.net/aggregated/aggflightinfo/",
+                        "PREPOUTPUT": "wasb://maintenancesadata@<accountname>.blob.core.windows.net/intermediate/mldata",
+                        "CurrentDate": "$$Text.Format('{0:yyyy-MM-dd}', SliceStart)",
+                        "CurrentHour": "$$Text.Format('{0:HH}',SliceStart)"
+                    }
+                },
+                "inputs": [
+                    {
+                        "name": "AggFlightInfoDataTable"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "IntermediateMLInputDataTable"
+                    }
+                ],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "concurrency": 1,
+                    "retry": 3
+                },
+                "scheduler": {
+                    "frequency": "Hour",
+                    "interval": 3,
+                    "style": "StartOfInterval"
+                },
+                "name": "SchemaPrepForML",
+                "linkedServiceName": "HDInsightLinkedService"
+            },
+            {
+                "type": "Copy",
+                "typeProperties": {
+                    "source": {
+                        "type": "BlobSource"
+                    },
+                    "sink": {
+                        "type": "BlobSink",
+                        "writeBatchSize": 10000,
+                        "writeBatchTimeout": "01:00:00"
+                    }
+                },
+                "inputs": [
+                    {
+                        "name": "IntermediateMLInputDataTable"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "IntermediateMLInputDataCSVTable"
+                    }
+                ],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "concurrency": 1,
+                    "retry": 3
+                },
+                "scheduler": {
+                    "frequency": "Hour",
+                    "interval": 3,
+                    "style": "StartOfInterval"
+                },
+                "name": "FileExtensionPrepforMLActivity"
+            },
+            {
+                "type": "AzureMLBatchScoring",
+                "typeProperties": {},
+                "inputs": [
+                    {
+                        "name": "IntermediateMLInputDataCSVTable"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "ScoredResultTable"
+                    }
+                ],
+                "policy": {
+                    "timeout": "01:00:00",
+                    "concurrency": 1,
+                    "retry": 3
+                },
+                "scheduler": {
+                    "frequency": "Hour",
+                    "interval": 3,
+                    "style": "StartOfInterval"
+                },
+                "name": "AMLBatchScoring",
+                "linkedServiceName": "AzuremLEndpointBatchLocation"
+            }
+        ],
+        "start": "Activity Period UTC, i.e. - 2016-03-15T12:00:00Z",
+        "end": "Activity Period UTC, i.e. - 2016-03-16T17:00:00Z", 
+        "isPaused": false,
+        "pipelineMode": "Scheduled"
+    }
+}

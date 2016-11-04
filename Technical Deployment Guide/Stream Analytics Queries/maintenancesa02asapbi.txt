@@ -1,0 +1,40 @@
+SELECT 
+	CAST(processed as Datetime) as processed,
+	id,
+	cycle,
+	endofcycle,
+	CAST(s9 as float) as s9,
+	CAST(s11 as float) as s11,
+	CAST(s14 as float) as s14,
+	CAST(s15 as float) as s15,
+	9152.56 as s9_alert,
+	48.26 as s11_alert,
+	8212.57 as s14_alert,
+	8.54 as s15_alert 
+INTO 
+	aircraftmonitor 
+FROM 
+	EventHubSource; 
+	
+SELECT 
+	id,
+	max(CAST(processed as Datetime)) as processed,
+	avg(s11) as avg_s11,count(*) as alerts 
+INTO 
+	aircraftalert 
+FROM 
+	EventHubSource 
+GROUP BY 
+	id,
+	TumblingWindow(second,5) HAVING avg_s11 > 48.26; 
+
+SELECT 
+	count(endofcycle),
+	max(CAST(processed as Datetime)) as processed 
+INTO 
+	Flightsbyhour 
+FROM 
+	EventHubSource 
+GROUP BY 
+	endofcycle, 
+	tumblingwindow(hour,1) having CAST(endofcycle as bigint)=1;

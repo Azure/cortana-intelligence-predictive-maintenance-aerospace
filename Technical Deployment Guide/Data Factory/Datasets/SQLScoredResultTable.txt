@@ -1,0 +1,30 @@
+{
+    "name": "SQLScoredResultTable",
+    "properties": {
+        "structure": [
+            {
+                "name": "Id",
+                "type": "String"
+            },
+            {
+                "name": "Cycle",
+                "type": "String"
+            },
+            {
+                "name": "Rul",
+                "type": "String"
+            }
+        ],
+        "published": false,
+        "type": "AzureSqlTable",
+        "linkedServiceName": "AzureSqlLinkedService",
+        "typeProperties": {
+            "tableName": "PMResult"
+        },
+        "availability": {
+            "frequency": "Hour",
+            "interval": 3,
+            "style": "StartOfInterval"
+        }
+    }
+}

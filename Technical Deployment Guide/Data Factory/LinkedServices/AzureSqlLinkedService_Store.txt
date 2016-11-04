@@ -1,0 +1,9 @@
+{
+    "name": "AzureSqlLinkedService",
+    "properties": {
+        "type": "AzureSqlDatabase",
+        "typeProperties": {
+            "connectionString": "Data Source=tcp:[Server Name].database.windows.net,1433;Initial Catalog=pmaintenancedb;Integrated Security=False;User ID=[User ID];Password=[Password];Connect Timeout=30;Encrypt=True"
+        }
+    }
+}

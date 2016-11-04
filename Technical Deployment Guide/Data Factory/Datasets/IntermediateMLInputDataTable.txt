@@ -1,0 +1,328 @@
+{
+    "name": "IntermediateMLInputDataTable",
+    "properties": {
+        "structure": [
+            {
+                "name": "id",
+                "type": "String"
+            },
+            {
+                "name": "cycle",
+                "type": "String"
+            },
+            {
+                "name": "setting1",
+                "type": "String"
+            },
+            {
+                "name": "setting2",
+                "type": "String"
+            },
+            {
+                "name": "setting3",
+                "type": "String"
+            },
+            {
+                "name": "s1",
+                "type": "String"
+            },
+            {
+                "name": "s2",
+                "type": "String"
+            },
+            {
+                "name": "s3",
+                "type": "String"
+            },
+            {
+                "name": "s4",
+                "type": "String"
+            },
+            {
+                "name": "s5",
+                "type": "String"
+            },
+            {
+                "name": "s6",
+                "type": "String"
+            },
+            {
+                "name": "s7",
+                "type": "String"
+            },
+            {
+                "name": "s8",
+                "type": "String"
+            },
+            {
+                "name": "s9",
+                "type": "String"
+            },
+            {
+                "name": "s10",
+                "type": "String"
+            },
+            {
+                "name": "s11",
+                "type": "String"
+            },
+            {
+                "name": "s12",
+                "type": "String"
+            },
+            {
+                "name": "s13",
+                "type": "String"
+            },
+            {
+                "name": "s14",
+                "type": "String"
+            },
+            {
+                "name": "s15",
+                "type": "String"
+            },
+            {
+                "name": "s16",
+                "type": "String"
+            },
+            {
+                "name": "s17",
+                "type": "String"
+            },
+            {
+                "name": "s18",
+                "type": "String"
+            },
+            {
+                "name": "s19",
+                "type": "String"
+            },
+            {
+                "name": "s20",
+                "type": "String"
+            },
+            {
+                "name": "s21",
+                "type": "String"
+            },
+            {
+                "name": "a1",
+                "type": "String"
+            },
+            {
+                "name": "a2",
+                "type": "String"
+            },
+            {
+                "name": "a3",
+                "type": "String"
+            },
+            {
+                "name": "a4",
+                "type": "String"
+            },
+            {
+                "name": "a5",
+                "type": "String"
+            },
+            {
+                "name": "a6",
+                "type": "String"
+            },
+            {
+                "name": "a7",
+                "type": "String"
+            },
+            {
+                "name": "a8",
+                "type": "String"
+            },
+            {
+                "name": "a9",
+                "type": "String"
+            },
+            {
+                "name": "a10",
+                "type": "String"
+            },
+            {
+                "name": "a11",
+                "type": "String"
+            },
+            {
+                "name": "a12",
+                "type": "String"
+            },
+            {
+                "name": "a13",
+                "type": "String"
+            },
+            {
+                "name": "a14",
+                "type": "String"
+            },
+            {
+                "name": "a15",
+                "type": "String"
+            },
+            {
+                "name": "a16",
+                "type": "String"
+            },
+            {
+                "name": "a17",
+                "type": "String"
+            },
+            {
+                "name": "a18",
+                "type": "String"
+            },
+            {
+                "name": "a19",
+                "type": "String"
+            },
+            {
+                "name": "a20",
+                "type": "String"
+            },
+            {
+                "name": "a21",
+                "type": "String"
+            },
+            {
+                "name": "sd1",
+                "type": "String"
+            },
+            {
+                "name": "sd2",
+                "type": "String"
+            },
+            {
+                "name": "sd3",
+                "type": "String"
+            },
+            {
+                "name": "sd4",
+                "type": "String"
+            },
+            {
+                "name": "sd5",
+                "type": "String"
+            },
+            {
+                "name": "sd6",
+                "type": "String"
+            },
+            {
+                "name": "sd7",
+                "type": "String"
+            },
+            {
+                "name": "sd8",
+                "type": "String"
+            },
+            {
+                "name": "sd9",
+                "type": "String"
+            },
+            {
+                "name": "sd10",
+                "type": "String"
+            },
+            {
+                "name": "sd11",
+                "type": "String"
+            },
+            {
+                "name": "sd12",
+                "type": "String"
+            },
+            {
+                "name": "sd13",
+                "type": "String"
+            },
+            {
+                "name": "sd14",
+                "type": "String"
+            },
+            {
+                "name": "sd15",
+                "type": "String"
+            },
+            {
+                "name": "sd16",
+                "type": "String"
+            },
+            {
+                "name": "sd17",
+                "type": "String"
+            },
+            {
+                "name": "sd18",
+                "type": "String"
+            },
+            {
+                "name": "sd19",
+                "type": "String"
+            },
+            {
+                "name": "sd20",
+                "type": "String"
+            },
+            {
+                "name": "sd21",
+                "type": "String"
+            }
+        ],
+        "published": false,
+        "type": "AzureBlob",
+        "linkedServiceName": "StorageLinkedService",
+        "typeProperties": {
+            "folderPath": "maintenancesadata/intermediate/mldata/date={Year}-{Month}-{Day}/hour={Hour}/",
+            "format": {
+                "type": "TextFormat",
+                "columnDelimiter": ","
+            },
+            "partitionedBy": [
+                {
+                    "name": "Year",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "yyyy"
+                    }
+                },
+                {
+                    "name": "Month",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "MM"
+                    }
+                },
+                {
+                    "name": "Day",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "dd"
+                    }
+                },
+                {
+                    "name": "Hour",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "HH"
+                    }
+                }
+            ]
+        },
+        "availability": {
+            "frequency": "Hour",
+            "interval": 3,
+            "style": "StartOfInterval"
+        }
+    }
+}

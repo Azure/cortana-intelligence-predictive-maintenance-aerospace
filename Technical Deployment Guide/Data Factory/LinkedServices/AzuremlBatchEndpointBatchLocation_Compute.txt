@@ -1,0 +1,10 @@
+{
+    "name": "AzuremLEndpointBatchLocation",
+    "properties": {
+        "type": "AzureML",
+        "typeProperties": {
+            "mlEndpoint": "[BES Endpoint up to /jobs without the additional parameters starting with ?]",
+            "apiKey": "[API Key from experiment page]"
+        }
+    }
+}

@@ -1,0 +1,168 @@
+{
+    "name": "AggFlightInfoDataTable",
+    "properties": {
+        "structure": [
+            {
+                "name": "aggredatedt",
+                "type": "String"
+            },
+            {
+                "name": "id",
+                "type": "String"
+            },
+            {
+                "name": "cycle",
+                "type": "String"
+            },
+            {
+                "name": "counter",
+                "type": "String"
+            },
+            {
+                "name": "endofcycle",
+                "type": "String"
+            },
+            {
+                "name": "setting1",
+                "type": "String"
+            },
+            {
+                "name": "setting2",
+                "type": "String"
+            },
+            {
+                "name": "setting3",
+                "type": "String"
+            },
+            {
+                "name": "s1",
+                "type": "String"
+            },
+            {
+                "name": "s2",
+                "type": "String"
+            },
+            {
+                "name": "s3",
+                "type": "String"
+            },
+            {
+                "name": "s4",
+                "type": "String"
+            },
+            {
+                "name": "s5",
+                "type": "String"
+            },
+            {
+                "name": "s6",
+                "type": "String"
+            },
+            {
+                "name": "s7",
+                "type": "String"
+            },
+            {
+                "name": "s8",
+                "type": "String"
+            },
+            {
+                "name": "s9",
+                "type": "String"
+            },
+            {
+                "name": "s10",
+                "type": "String"
+            },
+            {
+                "name": "s11",
+                "type": "String"
+            },
+            {
+                "name": "s12",
+                "type": "String"
+            },
+            {
+                "name": "s13",
+                "type": "String"
+            },
+            {
+                "name": "s14",
+                "type": "String"
+            },
+            {
+                "name": "s15",
+                "type": "String"
+            },
+            {
+                "name": "s16",
+                "type": "String"
+            },
+            {
+                "name": "s17",
+                "type": "String"
+            },
+            {
+                "name": "s18",
+                "type": "String"
+            },
+            {
+                "name": "s19",
+                "type": "String"
+            },
+            {
+                "name": "s20",
+                "type": "String"
+            },
+            {
+                "name": "s21",
+                "type": "String"
+            }
+        ],
+        "published": false,
+        "type": "AzureBlob",
+        "linkedServiceName": "StorageLinkedService",
+        "typeProperties": {
+            "folderPath": "maintenancesadata/aggregated/aggflightinfo/date={Year}-{Month}-{Day}/hour={Hour}",
+            "partitionedBy": [
+                {
+                    "name": "Year",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "yyyy"
+                    }
+                },
+                {
+                    "name": "Month",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "MM"
+                    }
+                },
+                {
+                    "name": "Day",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "dd"
+                    }
+                },
+                {
+                    "name": "Hour",
+                    "value": {
+                        "type": "DateTime",
+                        "date": "SliceStart",
+                        "format": "HH"
+                    }
+                }
+            ]
+        },
+        "availability": {
+            "frequency": "Hour",
+            "interval": 3,
+            "style": "StartOfInterval"
+        }
+    }
+}
