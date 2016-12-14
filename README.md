@@ -18,8 +18,8 @@ See the **Technical Deployment Guide** folder for a full set of instructions on 
 
 We have put together a number of resources that cover different approaches to building solutions in the predictive maintenance space. These resources are listed below and may be helpful to those exploring ways to build predictive maintenance solutions using the Cortana Intelligence Suite.
 
-### [Predictive Maintenance for Aerospace Solution Template](https://gallery.cortanaintelligence.com/SolutionTemplate/Predictive-Maintenance-for-Aerospace-1)
-This solution template in the Cortana Intelligence Gallery provides a semi-automated deployment of the same solution described by the Technical Deployment Guide here. The deployment guide in this repository is intended to provide implementers with a more in-depth understanding of how the end-to-end solution presented in the gallery is built.
+### [Predictive Maintenance for Aerospace Solution](https://gallery.cortanaintelligence.com/SolutionTemplate/Predictive-Maintenance-for-Aerospace-4)
+This solution in the Cortana Intelligence Gallery provides an automated deployment of the same solution described by the Technical Deployment Guide here. The deployment guide in this repository is intended to provide implementers with a more in-depth understanding of how the end-to-end solution presented in the gallery is built.
 
 ### [Predictive Maintenance Modelling Guide](https://gallery.cortanaintelligence.com/Collection/Predictive-Maintenance-Modelling-Guide-1)
 This modelling guide covers the steps to implement a predictive maintenance model through feature engineering, label creation, training and evaluation. This resource is directed primarily at data scientists, and provides modelling tips specific to the predictive maintenance space. The data used here is for a manufacturing use case, but the techniques are applicable for all predictive maintenance problem types.
