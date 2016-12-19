@@ -8,7 +8,7 @@ There is a lot of documentation around the Cortana Intelligence Suite Solution T
 predictive maintenance for aerospace that predicts the remaining useful life of an aircraft 
 engine.
      
-There is an overview [blog post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/) and a [technical guide](https://azure.microsoft.com/en-us/documentation/articles/cortana-analytics-technical-guide-predictive-maintenance) that provide a higher level overview of the [solution template](https://gallery.cortanaintelligence.com/SolutionTemplate/Predictive-Maintenance-for-Aerospace-1) . 
+There is an overview [blog post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/) and a [technical guide](https://azure.microsoft.com/en-us/documentation/articles/cortana-analytics-technical-guide-predictive-maintenance) that provide a higher level overview of the [solution template](https://gallery.cortanaintelligence.com/Solution/Predictive-Maintenance-for-Aerospace-4). 
 
 This information is incredibly useful to understand the concepts behind and technology that 
 went into creating it but does not provide the deep systems understanding that implementers 
@@ -546,7 +546,7 @@ However, if the table is not receiving results in approximately 3.5 hours after 
 6.	Navigate into the Datasets of the event hub and for each dataset view the Recently updated slices
 
 In the case of steps 2 and 3 above, you look into the operations logs for those services to 
-determine what errors, if any, have 
+determine what errors, if any. 
 
 For case 6 it is expected that the first run of the pipeline will produce an error as there is no data 
 to process when it is initially started. Later runs should run successfully and if not details of the 
