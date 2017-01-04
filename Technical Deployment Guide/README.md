@@ -34,6 +34,9 @@ The image in this section shows the overall architecture of the Cortana Intellig
 Solution Template for predictive maintenance for aerospace that the remainder of this 
 document describes in detail. 
 ![architecture](https://caqsres.blob.core.windows.net/predictivemaintenance/PredictiveMaintenanceDiagram.JPG)
+
+From the GitHub Repository
+![architecture](https://github.com/Azure/cortana-intelligence-predictive-maintenance-aerospace/tree/master/Technical%20Deployment%20Guide/Images/PredictiveMaintenanceDiagram.JPG)
  
 The architecture is called out in the [blog post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/) under the section **Solution Template Architecture**
 
