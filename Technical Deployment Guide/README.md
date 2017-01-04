@@ -36,7 +36,7 @@ document describes in detail.
 ![architecture](https://caqsres.blob.core.windows.net/predictivemaintenance/PredictiveMaintenanceDiagram.JPG)
 
 From the GitHub Repository
-![architecture](https://github.com/Azure/cortana-intelligence-predictive-maintenance-aerospace/tree/master/Technical%20Deployment%20Guide/Images/PredictiveMaintenanceDiagram.JPG)
+![architecture](https://github.com/Azure/cortana-intelligence-predictive-maintenance-aerospace/tree/master/Technical Deployment Guide/Images/PredictiveMaintenanceDiagram.JPG)
  
 The architecture is called out in the [blog post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/) under the section **Solution Template Architecture**
 
