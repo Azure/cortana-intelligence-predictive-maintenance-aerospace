@@ -33,9 +33,6 @@ This section contains required accounts and software you will need to create thi
 The image in this section shows the overall architecture of the Cortana Intelligence Suite 
 Solution Template for predictive maintenance for aerospace that the remainder of this 
 document describes in detail. 
-![architecture](https://caqsres.blob.core.windows.net/predictivemaintenance/PredictiveMaintenanceDiagram.JPG)
-
-From the GitHub Repository
 ![architecture](Images/PredictiveMaintenanceDiagram.JPG)
  
 The architecture is called out in the [blog post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/) under the section **Solution Template Architecture**
@@ -479,24 +476,153 @@ While running the demo you can validate that the data factory is operating as ex
 -	Click on the ***Monitor & Manage*** button and validate your credentials again if prompted.
 -	If there are errors being reported, navigate back to portal.azure.com to the data factory and click on the datasets to determine where in the pipeline issues have been detected. 
 
-## 9.	Setting Up Power BI
-Power BI is used to create visualizations for monitoring the live data stream (hot path) as well as to show the prediction results of remaining useful life of engine components (cold path). The final dashboard can be viewed via Power BI online.
 
--	Install the [Power BI Desktop application](https://powerbi.microsoft.com/en-us/desktop)
--	With the application, open the template PBIX file in the package directory ***Power BI Template***
--	On the application ribbon menu, choose *Edit Queries*
--	For each of the queries, go to the *Query Settings* and click on the gear icon next to *Source*
--	In the SQL Server Database dialog that appears enter in the name of the SQL server created earlier.
--	Click ***OK***
--	When prompted for credentials choose ***Database*** tab on the left and enter the user name and password for the SQL server created earlier.
--	On the application ribbon menu click *Close and Apply* which will return you to the main application window.
--	On the application ribbon menu click *Publish*, you will be prompted for your credentials.
--	Navigate to ***msit.powerbi.com*** site, open the menu on the top left corner of the screen, navigate to Dashboards to see the dashboard that has been published. 
+##  9.	Setting Up Power BI
+### Overview
+This section describes how to set up Power BI dashboard to visualize
+your real time data from Azure Stream Analytics (hot path), as well as
+batch prediction results from Azure machine learning (cold path).
 
- 
-These steps have created the cold path showing the results from the machine learning output. Initially the static information inserted into the database during the SQL table creation step will be the only data available at this time in the dashboard. Updated information will be inserted over time once the entire solution is set to execute. 
+### Setup cold path dashboard
+In the cold path data pipeline, the essential goal is to get the
+predictive RUL (remaining useful life) of each aircraft engine once it
+finishes a flight (cycle). The prediction result is updated every 3
+hours for predicting the aircraft engines that have finished a flight
+during the past 3 hours.
 
-The dashboard can further be customized to show the hot path, i.e. data that is coming from the stream analytics job. That data is available on the Power BI website under Datasets as the stream analytics jobs as Aircraftalert, Aircraftmonitor and Flightsbyhour. These can be found at the bottom of the menu opened on the left side of the screen under Datasets. 
+Power BI connects to an Azure SQL database as its data source, where the
+prediction results are stored. Note: 1) Upon deploying your
+solution, a real prediction will show up in the database within 3 hours.
+The pbix file that came with the Generator download contains some seed
+data so that you may create the Power BI dashboard right away. 2) In
+this step, the prerequisite is to download and install the free software
+[Power BI
+desktop](https://powerbi.microsoft.com/documentation/powerbi-desktop-get-the-desktop/).
+
+The following steps will guide you on how to connect the pbix file to
+the SQL Database that was spun up at the time of solution deployment
+containing data (*e.g.*. prediction results) for visualization.
+
+1. Get the database credentials.
+   
+   You'll need **database server name, database name, user name and
+   password** before moving to next steps. Here are the steps to guide
+   you how to find them.
+   
+   * Once **'Azure SQL Database'** on your solution template diagram turns green, click it and then click **'Open'**.
+   * You'll see a new browser tab/window which displays the Azure
+     portal page. Click **'Resource groups'** on the left panel.
+   * Select the subscription you're using for deploying the solution, and
+     then select **'YourSolutionName\_ResourceGroup'**.
+   * In the new pop out panel, click the  ![SQL icon](Images/icon-sql.png) icon to access your
+     database. Your database name is next to the this icon (*e.g.*, **'pmaintenancedb'**), and  the **database server name** is listed under the Server name property and should look similar to **YourSoutionName.database.windows.net**.
+   * Your database **username** and **password** are the same as
+     the username and password previously recorded during deployment of the solution.
+2. Update the data source of the cold path report file with Power
+   BI Desktop.
+   
+   * In the folder on your PC where you downloaded and unzipped the
+     Generator file, double-click the
+     **PowerBI\\PredictiveMaintenanceAerospace.pbix** file. If you see any warning messages when you open the file, ignore them. On the top of the file, click **'Edit Queries'**.
+     
+     ![Edit Queries](Images/edit-queries.png)
+   * You'll see two tables, **RemainingUsefulLife** and **PMResult**. Select the first table and click ![Query settings icon](Images/icon-query-settings.png) next to **'Source'** under
+     **'APPLIED STEPS'** on the right **'Query Settings'** panel. Ignore
+     any warning messages that appear.
+   * In the pop out window, replace **'Server'** and **'Database'** with
+     your own server and database names, and then click **'OK'**. For server
+     name, make sure you specify the port 1433
+     (**YourSoutionName.database.windows.net, 1433**). Leave the Database field as **pmaintenancedb**. Ignore the warning
+     messages that appear on the screen.
+   * In the next pop out window, you'll see two options on the left pane
+     (**Windows** and **Database**). Click **'Database'**, fill in your
+     **'Username'** and **'Password'** (this is the username and password
+     you entered when you first deployed the solution and created an
+     Azure SQL database). In ***Select which level to apply these
+     settings to***, check database level option. Then click
+     **'Connect'**.
+   * Click on the second table **PMResult** then click ![Navigation icon](Images/icon-navigation.png)
+     next to **'Source'** under
+     **'APPLIED STEPS'** on the right **'Query Settings'** panel, and update
+     the server and database names as in the above steps and click OK.
+   * Once you're guided back to the previous page, close the window. A message will pop out - click **Apply**. Lastly, click the **Save** button to save
+     the changes. Your Power BI file has now established connection to the server. If your visualizations are empty, make sure you clear the selections on the visualizations to visualize all the data by clicking the eraser icon on the upper right corner of the legends. Use the refresh button to reflect new data on the visualizations. Initially, you will only see the seed data on your visualizations as the data factory is scheduled to refresh every 3 hours. After 3 hours, you will see new predictions reflected in your visualizations when you refresh the data.
+3. (Optional) Publish the cold path dashboard to [Power BI
+   online](http://www.powerbi.com/). Note that this step needs a Power
+   BI account (or Office 365 account).
+   
+   * Click **'Publish'** and few seconds later a window appears
+     displaying "Publishing to Power BI Success!" with a green
+     check mark. Click the link below "Open
+     PredictiveMaintenanceAerospace.pbix in Power BI". To find detailed instructions, see [Publish from Power BI Desktop](https://support.powerbi.com/knowledgebase/articles/461278-publish-from-power-bi-desktop).
+   * To create a new dashboard: click the **+** sign next to the
+     **Dashboards** section on the left pane. Enter the name "Predictive
+     Maintenance Demo" for this new dashboard.
+   * Once you open the report, click ![PIN icon](Images/icon-pin.png) to pin all the
+     visualizations to your dashboard. To find detailed instructions, see [Pin a tile to a Power BI dashboard from a report](https://support.powerbi.com/knowledgebase/articles/430323-pin-a-tile-to-a-power-bi-dashboard-from-a-report).
+     Go to the dashboard page and
+     adjust the size and location of your visualizations and edit their titles. To find detailed instructions on how to edit your tiles, see [Edit a tile -- resize, move, rename, pin, delete, add hyperlink](https://powerbi.microsoft.com/documentation/powerbi-service-edit-a-tile-in-a-dashboard/#rename). Here is an example dashboard with some cold path visualizations pinned to it.  Depending on how long you run your data generator, your numbers on the visualizations may be different.
+     <br/>
+     ![Final view](Images/final-view.png)
+     <br/>
+   * To schedule refresh of the data, hover your mouse over the **PredictiveMaintenanceAerospace** dataset, click ![Elipsis icon](Images/icon-elipsis.png) and then choose **Schedule Refresh**.
+     <br/>
+     **Note:** If you see a warning massage, click **Edit Credentials** and make sure your database credentials are the same as those described in step 1.
+     <br/>
+     ![Schedule refresh](Images/schedule-refresh.png)
+     <br/>
+   * Expand the **Schedule Refresh** section. Turn on "keep your
+     data up-to-date".
+     <br/>
+   * Schedule the refresh based on your needs. To find more information, see
+     [Data refresh in Power BI](https://support.powerbi.com/knowledgebase/articles/474669-data-refresh-in-power-bi).
+
+### Setup hot path dashboard
+The following steps will guide you how to visualize real time data
+output from Stream Analytics jobs that were generated at the time of
+solution deployment. A [Power BI online](http://www.powerbi.com/)
+account is required to perform the following steps. If you don't have an
+account, you can [create one](https://powerbi.microsoft.com/pricing).
+
+1. Add Power BI output in Azure Stream Analytics (ASA).
+   
+   * You will need to follow the instructions in
+     [Azure Stream Analytics & Power BI: A real-time analytics dashboard for real-time visibility of streaming data](../stream-analytics/stream-analytics-power-bi-dashboard.md)
+     to set up the output of your Azure Stream Analytics job as your Power BI dashboard.
+   * The ASA query has three outputs which are **aircraftmonitor**, **aircraftalert**, and **flightsbyhour**. You can view the query by clicking on query tab. Corresponding to each of these tables, you will need to add an output to ASA. When you add the first output (*e.g.* **aircraftmonitor**) make sure the **Output Alias**, **Dataset Name** and **Table Name** are the same (**aircraftmonitor**). Repeat the steps to add outputs for **aircraftalert**, and **flightsbyhour**. Once you have added all three output tables and started the ASA job, you should get a confirmation message (*e.g.*, "Starting Stream Analytics job maintenancesa02asapbi succeeded").
+2. Log in to [Power BI online](http://www.powerbi.com)
+   
+   * On the left panel Datasets section in My Workspace, the
+     ***DATASET*** names **aircraftmonitor**, **aircraftalert**, and
+     **flightsbyhour** should appear.This is the streaming data you pushed from Azure Stream Analytics in the previous step.The dataset **flightsbyhour** may not show up at the same time as the other two datasets due to the nature of the SQL query behind it. However, it should show up after an hour.
+   * Make sure the ***Visualizations*** pane is open and is shown on the
+     right side of the screen.
+3. Once you have the data flowing into Power BI, you can start visualizing the streaming data.  You can create other dashboard tiles based on appropriate datasets. Depending on how long you run your data generator, your numbers on the visualizations may be different.
+
+
+4. Here are some steps to create another tile –  the "Fleet View of Sensor 11 vs. Threshold 48.26" tile:
+   
+   * Click dataset **aircraftmonitor** on the left panel
+     Datasets section.
+   * Click the **Line Chart** icon.
+   * Click **Processed** in the **Fields** pane so that it shows under
+     "Axis" in the **Visualizations** pane.
+   * Click "s11" and "s11\_alert" so that they both appear
+     under "Values". Click the small arrow next to **s11** and
+     **s11\_alert**, change "Sum" to "Average".
+   * Click **SAVE** on the top and name the report "aircraftmonitor". The
+     report named "aircraftmonitor" will be shown in the **Reports**
+     section in the **Navigator** pane on the left.
+   * Click the **Pin Visual** icon on the top right corner of this
+     line chart. A "Pin to Dashboard" window may show up for you to
+     choose a dashboard. Select "Predictive Maintenance Demo", then
+     click "Pin".
+   * Hover the mouse over this tile on the dashboard, click the "edit"
+     icon on the top right corner to change its title to "Fleet View of
+     Sensor 11 vs. Threshold 48.26" and subtitle to "Average across fleet
+     over time".
+
+
 
 ## 10.	Getting it all running
 
