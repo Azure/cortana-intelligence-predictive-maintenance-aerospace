@@ -419,6 +419,17 @@ Now we have the three data store linked service created, we need to create two c
 
 The linked services are now complete, we will now move on to creating the data sets.
 
+| NOTE|
+|-------------------|
+	  HDInsights clusters request a certain number of resources from your subscription. 
+	  It is possible that your subscription may be out of resources, or enough resources 
+	  (cores) required for this data factory. If you have reached the limit for the region 
+	  chosen for this deploymnet you can use the following steps to help resolve this:
+	  
+	- Create a new resource group in another region
+	- Follow the steps above to create the Azure Data Factory in that region.	 
+
+
 ### Datasets
 For this solution we are going to need 6 data sets that are of type Azure Storage blob and Azure SQL tables. Navigate to the package location ***Data Factory\Datasets*** to access the scripts. 
 
