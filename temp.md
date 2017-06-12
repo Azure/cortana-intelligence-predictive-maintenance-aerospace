@@ -36,13 +36,19 @@ There are multiple documents on predictive maintenance for aerospace
 using Cortana Intelligence Suite Solution Template that monitors and
 predicts the remaining useful life (RUL) of an aircraft engine.
 
-There is an overview blog post and a technical guide that provide a
-higher level overview of the solution template.
+There is an overview [blog
+post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/)
+and a [technical
+guide](https://azure.microsoft.com/en-us/documentation/articles/cortana-analytics-technical-guide-predictive-maintenance)
+that provide a higher level overview of the [solution
+template](https://gallery.cortanaintelligence.com/Solution/Predictive-Maintenance-for-Aerospace-4).
 
-The one-click solution deployment template is useful to understand the
-concepts behind and technology that went into creating this solution.
-However, it does not provide the deep systems understanding that
-implementers need to understand the design in total.
+The [one-click solution deployment
+template](https://gallery.cortanaintelligence.com/Solution/Predictive-Maintenance-for-Aerospace-4)
+is useful to understand the concepts behind and technology that went
+into creating this solution. However, it does not provide the deep
+systems understanding that implementers need to understand the design in
+total.
 
 This technical deployment guide explains how to build the solution piece
 by piece and in many cases, explains why certain decisions were made.
@@ -55,7 +61,8 @@ The **Developer Journey Map** walks through the different components
 created as part of the end-to-end solution.
 
 **For technical problems or questions about deploying this solution,
-please post in the issues tab of the** repository**.**
+please post in the issues tab of the**
+[repository](https://github.com/Azure/cortana-intelligence-predictive-maintenance-aerospace)**.**
 
 Pre-Requisites
 
@@ -68,23 +75,24 @@ this solution.
 Following are a list of accounts and software you will need to create
 this solution.
 
-1.  The full contents of Github file repository (download the zipped
-    file).
+1.  [The full contents of Github file
+    repository](https://github.com/Azure/cortana-intelligence-predictive-maintenance-aerospace)
+    (download the zipped file).
 
-2.  A Studio ML account
+2.  [A Studio ML account](http://studio.azureml.net)
 
-3.  A Microsoft Office 365 subscription for Power BI access.
+3.  A [Microsoft Office 365 subscription](https://login.live.com/) for
+    Power BI access.
 
-4.  SQL Server Management Studio or a similar tool to access a SQL
-    server database.
+4.  [SQL Server Management
+    Studio](https://msdn.microsoft.com/en-us/library/mt238290.aspx) or a
+    similar tool to access a SQL server database.
 
-5.  Microsoft Azure Storage Explorer
+5.  [Microsoft Azure Storage Explorer](http://storageexplorer.com/)
 
-6.  Power BI Desktop
+6.  [Power BI Desktop](https://powerbi.microsoft.com/en-us/desktop)
 
 7.  Internet Access
-
-8.  9.  10. 11. 12. 13. 14. 
 
 Architecture
 
@@ -97,74 +105,43 @@ predictive maintenance solution.
 
 The solution architecture is shown in Figure 1.
 
-![](media/image1.png){width="6.845199037620297in"
-height="3.8006944444444444in"}
+![](media/image1.png){width="7.254891732283465in" height="3.05in"}
 
 **Figure 1: Architecture diagram for predictive maintenance solution for
 aerospace**
 
-In Figure 1, *Stream Analytics* provides real-time insights on engine
-health and stores that data in long-term storage for more complex,
-compute-intensive batch analytics.
+Following is a brief explanation of each component of the solution
+architecture and the overall workflow:
 
-*HDInsight* transforms the sensor data at scale which is then consumed
-by *Machine Learning* to predict the remaining useful life of aircraft
-engines and components after each flight.
-
-*Data Factory* handles orchestration, scheduling, and monitoring of the
-batch processing pipeline.
-
-The solution repository provides you a data generator as data source.
-This data source is comprised of or derived from publicly available data
-from the NASA data repository using the Turbofan Engine Degradation
-Simulation Data Set. A. Saxena and K. Goebel (2008). "Turbofan Engine
-Degradation Simulation Data Set", NASA Ames Prognostics Data Repository
-(http://ti.arc.nasa.gov/tech/dash/pcoe/prognostic-data-repository/),
-NASA Ames Research Center, Moffett Field, CA.
-
-Finally, a *Power BI* dashboard can be built on top of the pipeline to
-allow aircraft technicians to monitor the sensor data from an airplane
-or across the fleet in real time, using visualizations to schedule
-maintenance on engine parts.
-
-While this solution is customized for aircraft monitoring, it can easily
-be generalized for other predictive maintenance scenarios.
-
-Solution Setup
-
-This section guides you step-wise to implement each component of the
-solution, as shown in Figure 2. It also provides the rationale behind
-each step.
-
-![](media/image2.jpg){width="6.5in" height="3.23125in"}
-
-**Figure 2: Predictive maintenance for aerospace solution diagram**
-
-Following is a brief explanation of each component of the solution and
-the overall workflow:
-
-1.  The **data source** for this solution is a data generator
-    > application that simulates engine sensor. You can run it from your
-    > desktop or install in a virtual machine in your Azure account.
+1.  The solution repository provides you a data generator as **data
+    > source.** This data source is comprised of or derived from
+    > publicly available data from the NASA data repository using the
+    > Turbofan Engine Degradation Simulation Data Set. You can run it
+    > from your desktop or install in a virtual machine in your Azure
+    > account.
 
 2.  This synthetic data feeds into the **Azure Event Hubs** service as
     > data points.
 
-3.  Two **Azure Stream Analytics** jobs analyze the data to provide near
-    > real-time analytics on the input stream from the event hub. One of
-    > the Stream Analytics jobs archives all raw incoming events to the
+3.  *Stream Analytics* provides real-time insights on engine health and
+    > stores that data in long-term storage for more complex,
+    > compute-intensive batch analytics. In this template, two **Azure
+    > Stream Analytics** jobs analyze the data to provide near real-time
+    > analytics on the input stream from the event hub. One of the
+    > Stream Analytics jobs archives all raw incoming events to the
     > **Azure Storage** service for later processing by the **Azure Data
     > Factory** service, and the other publishes results onto a **Power
     > BI** dashboard.
 
 4.  The **HDInsight** service is used to run Hive scripts (orchestrated
-    > by **Azure Data Factory**) to provide aggregations on the raw
-    > events stored in Azure Storage by the Stream Analytics job.
+    > by **Azure Data Factory**) to provide aggregations at scale on the
+    > raw sensor data stored in Azure Storage by the Stream Analytics
+    > job.
 
 5.  The Azure **Machine Learning** service is used (orchestrated by
     > **Azure Data Factory**) to make predictions on the remaining
     > useful life (RUL) of particular aircraft engine based on the
-    > inputs received.
+    > inputs received from the **HDInsight** service.
 
 6.  **Azure SQL Database** is used (managed by **Azure Data Factory**)
     > to store the prediction results received from the **Azure Machine
@@ -176,13 +153,16 @@ the overall workflow:
 7.  **Azure Data Factory** handles orchestration, scheduling, and
     > monitoring of the batch processing pipeline.
 
-8.  Finally, **Power BI** is used for results visualization, so that
+8.  Finally, **Power BI** is used for results visualization. A *Power
+    > BI* dashboard can be built on top of the pipeline such that
     > aircraft technicians can monitor the sensor data from an airplane
     > or across the fleet in real time and use visualizations to
     > schedule engine maintenance.
 
-**Setups Basics**
-=================
+While this solution is customized for aircraft monitoring, it can easily
+be generalized for other predictive maintenance scenarios.
+
+Solution Setup
 
 Unless otherwise stated, to setup this solution provision **all Azure
 services from** <http://portal.azure.com/> referred henceforth as
@@ -275,8 +255,9 @@ Record it in table 1 below for future reference.
 
 **Pre-requisites:**
 
-1.  To explore data in Azure storage, download and install the Microsoft
-    Azure Storage Explorer (or any similar tool)
+1.  To explore data in Azure storage, download and install the
+    [Microsoft Azure Storage Explorer](http://storageexplorer.com/) (or
+    any similar tool)
 
 2.  From Azure Github, download and save the zipped repository or clone
     it to your local computer. NOTE: The zipped folder name is very
@@ -482,7 +463,7 @@ ASA job.
                                                    Click on ‘Create’ button to create the new output.
   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-**Section 5:** **Run Application to Generate Data**
+**Section 5: Run Application to Generate Data**
 
 In this solution, the event hub received data from a simulator that
 streams simulated aircraft engine data.
@@ -509,7 +490,8 @@ configure the data generator.
   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 **NOTE:** Data generator can also be run in the cloud, using an
-Azure Virtual Machine.
+Azure [Virtual
+Machine](https://docs.microsoft.com/en-us/azure/virtual-machines/virtual-machines-windows-hero-tutorial).
 
 **Section 6: Validate the Data Generation Path **
 
@@ -549,7 +531,7 @@ account by following these steps:
   1.  Note that a sub folder *rawdata* has been created by the stream analytics job.
   
 
-**Section 7:** **Deploy Azure SQL Server and Database**
+**Section 7: Deploy Azure SQL Server and Database**
 
 So far we have configured and validated the ingestion path. Next we can
 start building the data processing paths. In the solution Azure Data
@@ -634,7 +616,7 @@ Management Studio (SSMS) or a similar tool.
   Password            
   Connection String   
 
-**Section 8:** **Deploy Azure Studio ML Workspace and Experiment**
+**Section 8: Deploy Azure Studio ML Workspace and Experiment**
 
 The first thing we need to do is to create the workspace. A workspace is
 where experiments are created. It is also tied to a storage account for
@@ -699,7 +681,7 @@ intermediate results during experiment processing.
   ------------- --
   REQUEST URI   
 
-**Section 9:** **Deploy Azure Data Factory**
+**Section 9: Deploy Azure Data Factory**
 
 We have now created the necessary components to put the data pipeline
 together using Azure Data Factory. Data factories are orchestration
@@ -852,7 +834,7 @@ From the data factory blade,
     to portal.azure.com to the data factory and click on the datasets to
     determine where in the pipeline issues have been detected.
 
-**Section 10: Configure** **Power BI** **for Visualization**
+**Section 10: Configure Power BI for Visualization**
 
 This section describes how to set up Power BI dashboard to visualize
 your real-time data from Azure Stream Analytics (hot path), as well as
@@ -905,12 +887,12 @@ Follow the steps below to connect pbix file to the SQL Database
     > warning messages when you open the file, ignore them. On the top
     > of the file, click 'Edit Queries'.
 
-> ![Edit Queries](media/image3.png){width="4.34375in"
+> ![Edit Queries](media/image2.png){width="4.34375in"
 > height="1.4583333333333333in"}
 
 1.  You'll see two tables, RemainingUsefulLife and PMResult. Select the
     first table and click ![Query settings
-    icon](media/image4.png){width="0.16666666666666666in"
+    icon](media/image3.png){width="0.16666666666666666in"
     height="0.16666666666666666in"}next to 'Source' under 'APPLIED
     STEPS' in 'Query Settings' panel on the right. Ignore any warning
     messages that appear.
@@ -929,7 +911,7 @@ Follow the steps below to connect pbix file to the SQL Database
     level option. Click 'Connect'.
 
 4.  For the second table PMResult click ![Navigation
-    icon](media/image4.png){width="0.16666666666666666in"
+    icon](media/image3.png){width="0.16666666666666666in"
     height="0.16666666666666666in"}next to 'Source' under 'APPLIED
     STEPS' in 'Query Settings' panel on the right, and repeat steps 4
     and 5.
@@ -966,7 +948,7 @@ workspace).
     Select the report you just published.
 
 2.  Once you open the report, click ![PIN
-    icon](media/image5.png){width="0.22916666666666666in"
+    icon](media/image4.png){width="0.22916666666666666in"
     height="0.22916666666666666in"}to pin all the visualizations to your
     dashboard. You may need to create new dashboard or select existing
     dashboard. To find detailed instructions, see [Pin a tile to a Power
@@ -982,12 +964,12 @@ workspace).
     pinned to it. Depending on how long you run your data generator,
     your numbers on the visualizations may be different.
 
-    ![Final view](media/image6.png){width="6.241424978127734in"
+    ![Final view](media/image5.png){width="6.241424978127734in"
     height="3.654166666666667in"}
 
 4.  To schedule refresh of the data, hover your mouse over
     PredictiveMaintenanceAerospace dataset. Click ![Elipsis
-    icon](media/image7.png){width="0.2708333333333333in"
+    icon](media/image6.png){width="0.2708333333333333in"
     height="0.16666666666666666in"}and then choose Schedule Refresh.\
     **Note:** If you see a warning massage, click Edit Credentials and
     make sure your database credentials are the same as those used in
