@@ -7,15 +7,15 @@
 ## [Architecture](#architecture-1)
 ## [Solution Setup](#solution-setup)
 #### [Section 1: Create a new Azure Resource Group](#section-1--create-a-new-azure-resource-group)
-#### [Section 2: Deploy Azure Storage Account](#section-2-deploy-azure-storage-account)
-#### [Section 3: Deploy Azure Event Hub](#section-3-deploy-azure-event-hub)
-#### [Section 4: Deploy Azure Stream Analytics Jobs](#section-4-deploy-azure-stream-analytics-jobs)
-#### [Section 5: Run Application to Generate Data](#section-5-run-application-to-generate-data)
-#### [Section 6: Validate the Data Generation Path](#section-6-validate-the-data-generation-path)
-#### [Section 7: Deploy Azure SQL Server and Database](#section-7-deploy-azure-sql-server-and-database)
+#### [Section 2: Deploy Azure Storage Account](#section-2-deploy-azure-storage-account-1)
+#### [Section 3: Deploy Azure Event Hub](#section-3-deploy-azure-event-hub-1)
+#### [Section 4: Deploy Azure Stream Analytics Jobs](#section-4-deploy-azure-stream-analytics-jobs-1)
+#### [Section 5: Run Application to Generate Data](#section-5-run-application-to-generate-data-1)
+#### [Section 6: Validate the Data Generation Path](#section-6-validate-the-data-generation-path-1)
+#### [Section 7: Deploy Azure SQL Server and Database](#section-7-deploy-azure-sql-server-and-database-1)
 #### [Section 8: Deploy Azure Studio ML Workspace and Experiment](#section-8-deploy-azure-studio-ml-workspace-and-experiment)
-#### [Section 9: Deploy Azure Data Factory](#section-9-deploy-azure-data-factory)
-#### [Section 10: Configure Power BI for Visualization](#section-10-configure-power-bi-for-visualization)
+#### [Section 9: Deploy Azure Data Factory](#section-9-deploy-azure-data-factory-1)
+#### [Section 10: Configure Power BI for Visualization](#section-10-configure-power-bi-for-visualization-1)
 ## [Execute Solution and Validate](#execute-solution-and-validate-1)
 ## [Completion and Clean up](#completion-and-clean-up-1)
 
@@ -279,8 +279,8 @@ In this step, we will configure an Azure SQL Database to hold the remaining usef
 <br>
 <br>
 <br>
+
 ### **Section 8: Deploy Azure Studio ML Workspace and Experiment**
-<br>
 
 The first thing we need to do is to create the workspace. A workspace is where experiments are created. It is also tied to a storage account for intermediate results during experiment processing.
 <br>
@@ -301,7 +301,7 @@ The first thing we need to do is to create the workspace. A workspace is where e
 
 <br>
 **Table 4: Azure Web Service Parameters**
-<br>
+
 
 | API KEY | <br> |
 | --- | --- |
