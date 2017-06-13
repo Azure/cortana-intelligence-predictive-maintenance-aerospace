@@ -104,10 +104,15 @@ Now we will walk through the actual provisioning steps.
 
 An Azure Storage account is used for storage of incoming aircraft sensor readings through Azure Event Hub and Azure Stream Analytics. The storage account is also used to hold HIVE scripts that will be executed from Azure Data Factory when processing the sensor data to pass into the Azure Machine Learning experiment.
 
+<br>
+
 | Add a new Azure Storage account | In Azure Portal, Click on &quot;+&quot; &gt; &quot;Storage&quot; &gt; &quot;Storage Account (blob, file, table square)&quot; |
 | --- | --- |
 | Set parameter values | In the form, enter these values **Name:** aerodemo1 **Performance:** Standard **Replication:** Location Replication Strategy (LRS) **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central USFor all other parameters use default selections.  |
 | Provision | Click the &quot;Create&quot; button. It takes few minutes to create the storage account |
+
+<br>
+
 
 Now that the storage account has been created we need to collect some information about it to be used by other services like the Azure Data Factory.
 
@@ -129,12 +134,12 @@ Record it in table 1 below for future reference.
 1. To explore data in Azure storage, download and install the [Microsoft Azure Storage Explorer](http://storageexplorer.com/) (or any similar tool)
 2. From Azure Github, download and save the zipped repository or clone it to your local computer. NOTE: The zipped folder name is very long. To avoid errors due to long path name, either rename the folder before you unzip or save it to a folder which has a short path (e.g. C:/Demo).
 
-Execute below steps to add two blob containers, namely, _maintenancesadata_ and _maintenancesascript._
+Execute below steps to add two blob containers, namely, _maintenancesadata_ and _maintenancesascript._ <br>
 
 | Create new Blob Container _maintenancesadata_ | In Storage account aerodemo1 blade, select &quot;Overview&quot; &gt; &quot;Blobs&quot; &gt; &quot;+&quot;. Specify blob name as _maintenancesadata._ Click on the &quot;Create&quot; button. |
 | --- | --- |
 | Create new Blob Container _maintenancesascript_ | In Storage account aerodemo1 blade, select &quot;Overview&quot; &gt; &quot;Blobs&quot; &gt; &quot;+&quot;. Specify blob name as _maintenancesascript._ Click on the &quot;Create&quot; button. |
-| Upload HIVE queries for data processing | **1.** Click on the _maintenancesascript_ container. This will bring up a panel on the right. Click the &quot;Upload&quot; button. **2.** Browse to the &quot;Storage Files\script&quot; folder in the repository you downloaded in C:/Demo. This will upload the required HIVE queries that will be used in data processing later in this deployment.
+| Upload HIVE queries for data processing | **1.** Click on the _maintenancesascript_ container. This will bring up a panel on the right. Click the &quot;Upload&quot; button. <br> **2.** Browse to the &quot;Storage Files\script&quot; folder in the repository you downloaded. This will upload the required HIVE queries that will be used in data processing later in this deployment.
 
 
 
@@ -154,7 +159,11 @@ This creates the Azure Event Hub we need to receive aircraft sensor readings. Th
 | Create Consumer Group | Click event hubaerodemo1\_EH &gt; In the menu panel select &quot;Consumer Group&quot; under Entities.Click &quot;+Consumer Group&quot; to add new consumer group, provide name: blobcg_._Repeat above step to add consumer group, name: pbicg  |
 | --- | --- |
 
+<br>
+
 The connection string and event hub name information will be needed to configure the desktop data generation tool that simulates aircraft sensor readings being sent to the event hub.
+
+<br>
 
 | Get Connection String for Event hub namespace | **1.** In Event hub namespace &quot;aerodemo1&quot;, select &quot;Overview&quot; &gt; &quot;Connection Strings&quot;. **2.** This brings up the shared access policy window. Click policy &quot;RootManageSharedAccessKey&quot;, and copy the &quot;Connection string–primary key&quot; value. **3.** Record the connection string value in table 2: Azure Event Hub.
 | --- | --- |
@@ -181,15 +190,23 @@ The connection string and event hub name information will be needed to configure
 | Set parameter values | In the form, enter these values **Name:** maintenancesa02asablob **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US  |
 | Provision ASA jobs | Click the &quot;Create&quot; button. **NOTE:** This will create stream analytics job maintenancesa02asablob.Repeat above steps to create stream the second job maintenancesa02asapbi.  |
 
+<br>
+
 For each job, we need to configure their respective input, query and output. Configure both jobs with input as same Event hub to receive the sensor data, but with different queries and outputs as shown in the table below.
+
+<br>
 
 | Add Input for (ASA) job | In the ASA blade for maintenancesa02asablob job, select &quot;Job Topology&quot; &gt; &quot;Input&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
 | Set parameter values | In the form, enter these values **Import option:** Provide event hub settings manually **Service bus namespace:** &lt;name of event hub namespace e.g. aerodemo1&gt; **Event hub name:** &lt;name of the event hub e.g. aerodemo1\_EH&gt; **Event hub policy name:** RootManageSharedAccessKey **Event hub policy key:** &lt;insert the key you copied in Step-3&gt; **Event hub consumer group:** blobcgClick &quot;Create&quot; button to provision the input. **NOTE:** Repeat above steps to create input for the second job maintenancesa02asapbi, using identical parameter values, **except** for &quot;Event hub consumer group&quot; enter value as &quot;pbicg&quot;   |
 
+<br>
+
 | Add Query for (ASA) job | In the ASA blade for maintenancesa02asablob job, select &quot;Job Topology&quot; &gt; &quot;Query&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
 | Configure Query | In the query editor box, insert the contents of the file named as &quot;maintenancesa02asablob&quot; in the **Stream Analytics Queries** folder in the repository you downloaded in Step-2. **NOTE:** Repeat above steps to create query for the second job maintenancesa02asapbi. |
+
+<br>
 
 | Add Output for (ASA) job maintenancesa02asablob | In maintenancesa02asablob blade, select &quot;Job Topology&quot; &gt; &quot;Output&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
@@ -198,6 +215,8 @@ For each job, we need to configure their respective input, query and output. Con
 
 
 Next, configure three outputs, namely, &quot;Aircraftmonitor&quot;, &quot;Aircraftalert&quot;, and &quot;Flightsbyhour&quot; against the maintenancesa02asapbi ASA job.
+
+<br>
 
 | Add Output for (ASA) job maintenancesa02asapbi | In maintenancesa02asapbi blade, select &quot;Job Topology&quot; &gt; &quot;Output&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
@@ -224,8 +243,10 @@ The Event hub and the ASA jobs receives data generated by the data generator. So
 
 **Validate Event Hub**
 
-| 1. In the event hub namespace aerodemo1 blade, select Overview. |
+|  |
 | --- |
+|1. In the event hub namespace aerodemo1 blade, select Overview. |
+| |
 | 2. The overview dashboard will show, with a 15-minute latency, the activity in the event hub. Both the graph and the table will show the event activity in terms of incoming messages, send requests etc. |
 
 
@@ -233,40 +254,50 @@ The Event hub and the ASA jobs receives data generated by the data generator. So
 
 To validate ASA jobs, you need to first start executing each of the jobs, **maintenancesa02asablob** and **maintenancesa02asapbi.**
 
-| 1. In the blade of each ASA job, select Overview. From the menu at the top of the blade, click on &quot;Start&quot; to begin to execute the jobs. |
+|  |
 | --- |
+|1. In the blade of each ASA job, select Overview. From the menu at the top of the blade, click on &quot;Start&quot; to begin to execute the jobs. |
+|  |
 |2. With a 15-minute latency, both the graph and &quot;Input Event&quot; and &quot;Output Event&quot; counters in the monitoring section of the blade for each job will begin to increase. |
 
 Finally, validate that the files are being created in the storage account by following these steps:
 
-| **1.** Open the Microsoft Azure Storage Explorer desktop app |
+|  |
 | --- |
+|**1.** Open the Microsoft Azure Storage Explorer desktop app |
+|  |
 | **2.** Navigate to the storage account set up previously (aerodemo1)|
 | **3.** Open the blob container &quot;maintenancesadata&quot; |
 | **4.** Note that a sub folder _rawdata_ has been created by the stream analytics job. |
 
-
+<br>
 
 ### **Section 7: Deploy Azure SQL Server and Database**
+
+<br>
 
 So far we have configured and validated the ingestion path. Next we can start building the data processing paths. In the solution Azure Data Factory is used to process the data, which requires a couple more services, namely, Azure SQL Database and Azure Machine Learning.
 
 In this step, we will configure an Azure SQL Database to hold the remaining useful life (RUL) predictions which results from running the Azure Machine Learning experiment.
 
+<br>
+
+
 | Add Azure SQL Database | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Databases&quot; &gt; &quot;SQL Database&quot; &gt; &quot;Create&quot;. |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Database Name:** pmaintenancedb **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Select Source:** Blank DatabaseServer: Choose &quot;Create new server&quot;. In the new server form configure: **Server name:** aerodemo1 **Server admin login:** &lt;enter username&gt; **Password:** &lt;enter password&gt; **Confirm password:** &lt;re-enter password&gt;  **NOTE:** Write down the server-name, username and password as you will need to refer these later.  **Location:** Central US For all other parameters, it is okay to use the default values. |
+| Set parameter values | In the form, enter these values <br>**Database Name:** pmaintenancedb <br>**Subscription:** &lt;your Azure subscription name&gt; <br>**Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 <br>**Select Source:** Blank DatabaseServer: Choose &quot;<br>Create new server&quot;. In the new server form configure: <br>**Server name:** aerodemo1 <br>**Server admin login:** &lt;enter username&gt; <br>**Password:** &lt;enter password&gt; <br>**Confirm password:** &lt;re-enter password&gt;  <br>**NOTE:** Write down the server-name, username and password as you will need to refer these later.  **Location:** Central US For all other parameters, it is okay to use the default values. |
 | Provision Database | Click on &quot;Create&quot; to provision the new database. Wait till this step completes. |
-| Set firewall to enable access from desktop | In the newly created database pmaintenancedb blade, select Overview &gt; &quot;Set Server Firewall&quot; (from top menu). Create a firewall name using following valuesRule name: OpenStart IP: 0.0.0.0End IP: 255.255.255.255  **NOTE:** This firewall rule is not recommended systems in production, where you want to set this rule to the IP range of your secure system. However, for this demo it is acceptable.  |
+| Set firewall to enable access from desktop | In the newly created database pmaintenancedb blade, select Overview &gt; &quot;Set Server Firewall&quot; (from top menu). Create a firewall name using following valuesRule name: OpenStart IP: 0.0.0.0End IP: 255.255.255.255 <br> **NOTE:** This firewall rule is not recommended systems in production, where you want to set this rule to the IP range of your secure system. However, for this demo it is acceptable.  |
 | Get database connection string | In pmaintenancedb blade, &quot;Overview&quot; &gt; &quot;Show database connection strings&quot;. Copy the ADO.NET (SQL authentication) string and store in the table below |
 
 **NOTE:** To execute further steps, you need to install SQL Server Management Studio (SSMS) or a similar tool.
 
 | Connect to the SQL database from your desktop | Launch SSMS (or a similar tool) in your desktop, in the dialogue box enter **Server name** : aerodemo1. database.windows.net,1433 (most tools require the full name) **Authentication:** SQL Server Authentication  |
 | --- | --- |
-| Create tables for ML experiment and Azure Data factory |**1.** Click on pmaintenancedb SQL Database **2.** Click &quot;New Query&quot; in the tool bar. **3.** From the repository that you downloaded in section-2, copy the file in Storage Files\script\SQL and Execute it here. This step will create the necessary table for the machine learning experiment and a stored procedure that will be used by Azure Data Factory.  |
+| Create tables for ML experiment and Azure Data factory |**1.** Click on pmaintenancedb SQL Database <br>**2.** Click &quot;New Query&quot; in the tool bar. <br>**3.** From the repository that you downloaded in section-2, copy the file in Storage Files\script\SQL and Execute it here. This step will create the necessary table for the machine learning experiment and a stored procedure that will be used by Azure Data Factory.  |
 
 
+<br>
 
 **Table 3: Azure SQL Database Information**
 
@@ -294,7 +325,9 @@ The first thing we need to do is to create the workspace. A workspace is where e
 | Copy over the required experiment from the Gallery | **1.** Click [here](https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf) to navigate to the experiment. <br>**2.** Click the &quot;Open in Studio&quot; button.<br> **3.** After ML studio launches, in the dialog box &quot;Copy experiment from Gallery&quot;, select:<br> - ** ML Workspace:** aerodemo1 <br> - ** Location:** Central US <br> The experiment will now be copied over to aerodemo1 workspace. <br> **NOTE:** This process may take a few minutes. Once copied the experiment will open in the requested workspace. If prompted for upgrade, select OK.  |
 | Run ML Experiment | Click &quot;RUN&quot; at the bottom of the page. NOTE: This step will take several minutes to finish and all objects in the graph will have a check box on them to indicate they have run.  |
 | Create the Azure Web Service | **1.** Click &quot;DEPLOY WEB SERVICE&quot; at the bottom of the page to create the Azure Web Service associated with the experiment. When completed the browser will redirect to the web service home page. <br> **2.** Copy the &quot;API key&quot; from the web service home page and record it in table 4 below as you will need this information later. <br> **3.** Click the link **BATCH EXECUTION** under the **API HELP PAGE** section. On the BATCH EXECUTION help page, copy the Request URI under the Request section and record it in table 4 below as you will need this information later.
+
 <br>
+
 **NOTE:** 1. Copy only the URI part &quot;https:…/jobs&quot; ignoring the URI parameters starting with &quot;?&quot;.<br>2. The web service home page can also be found clicking the **WEB SERVICES** button on the left menu of the **studio.azureml.net** page once logged in.
 
 
@@ -325,7 +358,7 @@ Based on the data, and the flow of data, this data factory will be scheduled to 
 
 | Add Azure Data Factory | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Data + Analytics&quot; &gt; &quot;Data Factory&quot;.  |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Name:** aerodemo1 **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US   |
+| Set parameter values | In the form, enter these values <br>**Name:** aerodemo1 <br>**Subscription:** &lt;your Azure subscription name&gt; <br>**Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 <br>**Location:** Central US   |
 | Provision | Click &quot;Create&quot;. Wait till the data factory is deployed, it may take several minutes.  |
 
 Next, we will configure the various data factory components which will be used in this solution.
@@ -355,15 +388,25 @@ We will create two types of linked service Store and Compute.
 
 The linked services are now complete; we will now move on to creating the data sets.
 
-|  TIP: HDInsight clusters request a certain number of resources from your subscription. It is possible that your subscription may be out of resources, or enough resources (cores) required for this data factory. If you have reached the limit for the region chosen for this deployment you can use the following steps to help resolve this: <br> - Create a new resource group in another region<br>- Follow the steps above to create the Azure Data Factory in that region. |
-|---|
-<br>
+**TIP:** HDInsight clusters request a certain number of resources from your subscription. It is possible that your subscription may be out of resources, or enough resources (cores) required for this data factory. If you have reached the limit for the region chosen for this deployment you can use the following steps to help resolve this:
+<br> - Create a new resource group in another region
+<br> - Follow the steps above to create the Azure Data Factory in that region.
+
+
 #### **Deploy Datasets**
+
 <br>
+
+
 For this solution, we are going to need 6 data sets that are of type Azure Storage blob and Azure SQL tables.
 
-| Deploy Data Sets | In Azure data factory aerodemo1 blade, click on &quot;Author and Deploy&quot;.At the top of the tab, click &quot;New dataset/Azure blob storage&quot; EXCEPT for the content of SQLScoredResultTable.txt which you will choose &quot;New dataset/Azure SQL&quot;Copy the contents of the file into the editor. Click Deploy  |
-| --- |
+<br>
+
+
+|  |  |
+| --- | --- |
+|Deploy Data Sets | In Azure data factory aerodemo1 blade, click on &quot;Author and Deploy&quot;.At the top of the tab, click &quot;New dataset/Azure blob storage&quot; EXCEPT for the content of SQLScoredResultTable.txt which you will choose &quot;New dataset/Azure SQL&quot;Copy the contents of the file into the editor. Click Deploy  |
+
 
 #### **Deploy Pipelines**
 <br>
