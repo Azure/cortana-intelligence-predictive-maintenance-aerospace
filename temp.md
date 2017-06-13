@@ -2,10 +2,10 @@
 
 # Table of Contents
 
-## [Scope](#Scope)
-## [Pre-Requisites](#Pre-Requisites)
-## [Architecture](#Architecture)
-## [Solution Setup](#Solution Setup)
+## [Scope](#scope-1)
+## [Pre-Requisites](#pre-requisites-1)
+## [Architecture](#architecture-1)
+## [Solution Setup](#solution-setup)
 >## [Section 1: Create a new Azure Resource Group](#Section 1: Create a new Azure Resource Group)
    ## [Section 2: Deploy Azure Storage Account](#Section 2: Deploy Azure Storage Account)
    ## [Section 3: Deploy Azure Event Hub](#Section 3: Deploy Azure Event Hub)
@@ -163,6 +163,7 @@ The connection string and event hub name information will be needed to configure
 
 | **Azure Event Hub Namespace** | **Primary Connection String** |
 | --- | --- |
+|  | |
 
 
 
