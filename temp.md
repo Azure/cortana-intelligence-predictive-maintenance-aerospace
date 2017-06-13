@@ -13,7 +13,7 @@
 #### [Section 5: Run Application to Generate Data](#section-5-run-application-to-generate-data-1)
 #### [Section 6: Validate the Data Generation Path](#section-6-validate-the-data-generation-path-1)
 #### [Section 7: Deploy Azure SQL Server and Database](#section-7-deploy-azure-sql-server-and-database-1)
-#### [Section 8: Deploy Azure Studio ML Workspace and Experiment](#section-8-deploy-azure-studio-ml-workspace-and-experiment)
+#### [Section 8: Deploy Azure Studio ML Workspace and Experiment](#section-8-deploy-azure-studio-ml-workspace-and-experiment-1)
 #### [Section 9: Deploy Azure Data Factory](#section-9-deploy-azure-data-factory-1)
 #### [Section 10: Configure Power BI for Visualization](#section-10-configure-power-bi-for-visualization-1)
 ## [Execute Solution and Validate](#execute-solution-and-validate-1)
@@ -294,12 +294,11 @@ The first thing we need to do is to create the workspace. A workspace is where e
 | Copy over the required experiment from the Gallery | **1.** Click [here](https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf) to navigate to the experiment. <br>**2.** Click the &quot;Open in Studio&quot; button.<br> **3.** After ML studio launches, in the dialog box &quot;Copy experiment from Gallery&quot;, select:<br> - ** ML Workspace:** aerodemo1 <br> - ** Location:** Central US <br> The experiment will now be copied over to aerodemo1 workspace. <br> **NOTE:** This process may take a few minutes. Once copied the experiment will open in the requested workspace. If prompted for upgrade, select OK.  |
 | Run ML Experiment | Click &quot;RUN&quot; at the bottom of the page. NOTE: This step will take several minutes to finish and all objects in the graph will have a check box on them to indicate they have run.  |
 | Create the Azure Web Service | **1.** Click &quot;DEPLOY WEB SERVICE&quot; at the bottom of the page to create the Azure Web Service associated with the experiment. When completed the browser will redirect to the web service home page. <br> **2.** Copy the &quot;API key&quot; from the web service home page and record it in table 4 below as you will need this information later. <br> **3.** Click the link **BATCH EXECUTION** under the **API HELP PAGE** section. On the BATCH EXECUTION help page, copy the Request URI under the Request section and record it in table 4 below as you will need this information later.
-<br>**NOTE:**
-1. Copy only the URI part &quot;https:…/jobs&quot; ignoring the URI parameters starting with &quot;?&quot;.
-2. The web service home page can also be found clicking the **WEB SERVICES** button on the left menu of the **studio.azureml.net** page once logged in.
-
-
 <br>
+**NOTE:** 1. Copy only the URI part &quot;https:…/jobs&quot; ignoring the URI parameters starting with &quot;?&quot;.<br>2. The web service home page can also be found clicking the **WEB SERVICES** button on the left menu of the **studio.azureml.net** page once logged in.
+
+
+
 **Table 4: Azure Web Service Parameters**
 
 
