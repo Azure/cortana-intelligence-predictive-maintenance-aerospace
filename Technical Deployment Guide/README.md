@@ -58,7 +58,7 @@ This predictive maintenance solution monitors aircraft and predicts the remainin
 
 The solution architecture is shown in Figure 1.
 
- ![Architecture](./CIS-arch-general.png)
+ ![Architecture](./CIS-arch-aerospace.png)
 
   **Figure 1: Architecture diagram for predictive maintenance solution for aerospace**
 
