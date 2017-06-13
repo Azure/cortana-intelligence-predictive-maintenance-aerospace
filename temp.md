@@ -470,18 +470,17 @@ You&#39;ll need database server name, database name, user name and password befo
 
 1. Double-click the Power BI Template\PredictiveMaintenanceAerospace.pbix file. If you see any warning messages when you open the file, ignore them. On the top of the file, click &#39;Edit Queries&#39;.
 
- ![](data:image/*;
+ ![pib1](./pbi1.png)
 
 1.
-4.You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click ![](data:image/*;base64,)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.
+4.You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click on ![pbi2](./pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.
 2. In the pop out window, replace &#39;Server&#39; and &#39;Database&#39; with your own server and database names, and then click &#39;OK&#39;. For server name, make sure you specify the port 1433 (database.windows.net, 1433). Leave the Database field as pmaintenancedb. Ignore the warning messages that appear on the screen.
 3. In the next pop out window, you&#39;ll see two options on the left pane (Windows and Database). Click &#39;Database&#39;, fill in &#39;Username&#39; and &#39;Password&#39; for the SQL Database.
 
 If prompted for &quot;_level to apply these settings to&quot;_, check database level option. Click &#39;Connect&#39;.
 
 1.
-7.For the second table PMResult click ![](data:image/*;base64,
-next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right, and repeat steps 4 and 5.
+7.For the second table PMResult click on ![pbi2](./pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right, and repeat steps 4 and 5.
 2. Once you&#39;re guided back to the previous page, from the top menu select Close &amp; Apply.
 3. Click File &gt; Save button to save the changes.
 4. Visualize Seed Data: The Power BI file has now established connection to the server. If your visualizations are empty, make sure you clear the selections on the visualizations by clicking the eraser icon on the upper right corner of the legends.
@@ -494,15 +493,15 @@ Use the refresh button to reflect new data on the visualizations. Initially, you
 
 1. From the left menu panel, Click on &quot;My Workspace&quot; &gt; &quot;Reports&quot;. Select the report you just published.
 2.
-2.Once you open the report, click ![](data:image/*;base64,to pin all the visualizations to your dashboard. You may need to create new dashboard or select existing dashboard. To find detailed instructions, see [Pin a tile to a Power BI dashboard from a report](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-pin-a-tile-to-a-dashboard-from-a-report/).
+2.Once you open the report, click ![pbi3](./pbi3.png)to pin all the visualizations to your dashboard. You may need to create new dashboard or select existing dashboard. To find detailed instructions, see [Pin a tile to a Power BI dashboard from a report](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-pin-a-tile-to-a-dashboard-from-a-report/).
 3. Go to the dashboard page and adjust the size and location of your visualizations and edit their titles. You can find detailed instructions on [how to edit your tiles here](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-edit-a-tile-in-a-dashboard/#rename).
 
 Below is an example dashboard with some cold path visualizations pinned to it. Depending on how long you run your data generator, your numbers on the visualizations may be different.
 
- ![](data:image/*;
+![pbi4](./pbi4.png)
 
 1.
-4.To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![](data:image/*;base64,C)and then choose Schedule Refresh.
+4.To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![pbi5](./pbi5.png)and then choose Schedule Refresh.
 **Note:** If you see a warning massage, click Edit Credentials and make sure your database credentials are the same as those used in Step 6 of this document.
 Expand the Schedule Refresh section. Turn on &quot;keep your data up-to-date&quot;.
 2. Schedule the refresh based on your needs. To find more information, see [Data refresh in Power BI](https://powerbi.microsoft.com/en-us/documentation/powerbi-refresh-data/).
