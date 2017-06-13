@@ -198,19 +198,19 @@ For each job, we need to configure their respective input, query and output. Con
 
 | Add Input for (ASA) job | In the ASA blade for maintenancesa02asablob job, select &quot;Job Topology&quot; &gt; &quot;Input&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Import option:** Provide event hub settings manually **Service bus namespace:** &lt;name of event hub namespace e.g. aerodemo1&gt; **Event hub name:** &lt;name of the event hub e.g. aerodemo1\_EH&gt; **Event hub policy name:** RootManageSharedAccessKey **Event hub policy key:** &lt;insert the key you copied in Step-3&gt; **Event hub consumer group:** blobcgClick &quot;Create&quot; button to provision the input. **NOTE:** Repeat above steps to create input for the second job maintenancesa02asapbi, using identical parameter values, **except** for &quot;Event hub consumer group&quot; enter value as &quot;pbicg&quot;   |
+| Set parameter values | In the form, enter these values **Import option:** Provide event hub settings manually **Service bus namespace:** &lt;name of event hub namespace e.g. aerodemo1&gt; **Event hub name:** &lt;name of the event hub e.g. aerodemo1\_EH&gt; **Event hub policy name:** RootManageSharedAccessKey **Event hub policy key:** &lt;insert the key you copied in Section-3&gt; **Event hub consumer group:** blobcgClick &quot;Create&quot; button to provision the input. **NOTE:** Repeat above steps to create input for the second job maintenancesa02asapbi, using identical parameter values, **except** for &quot;Event hub consumer group&quot; enter value as &quot;pbicg&quot;   |
 
 <br>
 
 | Add Query for (ASA) job | In the ASA blade for maintenancesa02asablob job, select &quot;Job Topology&quot; &gt; &quot;Query&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
-| Configure Query | In the query editor box, insert the contents of the file named as &quot;maintenancesa02asablob&quot; in the **Stream Analytics Queries** folder in the repository you downloaded in Step-2. **NOTE:** Repeat above steps to create query for the second job maintenancesa02asapbi. |
+| Configure Query | In the query editor box, insert the contents of the file named as &quot;maintenancesa02asablob&quot; in the **Stream Analytics Queries** folder in the repository you downloaded in Section-2. **NOTE:** Repeat above steps to create query for the second job maintenancesa02asapbi. |
 
 <br>
 
 | Add Output for (ASA) job maintenancesa02asablob | In maintenancesa02asablob blade, select &quot;Job Topology&quot; &gt; &quot;Output&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Output Alias:** RawDataBlobSink **Import option:** Provide blob storage settings manually **Storage account:** &lt;name of storage e.g. aerodemo1&gt; **Storage account key:** &lt;insert the key you copied in Step-2&gt; **Container:** maintenancesadata **Path pattern:** rawdata/date={date}/hour={time} **Date format:** YYYY-MM-DD_[This defines the format of the path strings in the storage account and is required for the HIVE scripts that will be executed as part of the larger data flow.]_ **Time format:** HH  |
+| Set parameter values | In the form, enter these values **Output Alias:** RawDataBlobSink **Import option:** Provide blob storage settings manually **Storage account:** &lt;name of storage e.g. aerodemo1&gt; **Storage account key:** &lt;insert the key you copied in Section-2&gt; **Container:** maintenancesadata **Path pattern:** rawdata/date={date}/hour={time} **Date format:** YYYY-MM-DD_[This defines the format of the path strings in the storage account and is required for the HIVE scripts that will be executed as part of the larger data flow.]_ **Time format:** HH  |
 
 
 
@@ -230,9 +230,9 @@ In this solution, the event hub received data from a simulator that streams simu
 
 Now that we have the event hub and stream analytics configured we can configure the data generator.
 
-| Launch application | In the repository, you downloaded in Step 2, open the &quot;Predictive Maintenance Data Generator&quot; folder Start the application &quot;Generator&quot;  |
+| Launch application | In the repository, you downloaded in Section 2, open the &quot;Predictive Maintenance Data Generator&quot; folder Start the application &quot;Generator&quot;  |
 | --- | --- |
-| Configure application | In the Generator user interface, configure **EventHubName** : &lt;event hub name, e.g.  aerodemo1\_EH&gt; **EventHubConnectionString:** &lt;insert the key you copied in Step-3&gt; Click on &quot;Save Configuration Changes&quot; button to save the config.  |
+| Configure application | In the Generator user interface, configure **EventHubName** : &lt;event hub name, e.g.  aerodemo1\_EH&gt; **EventHubConnectionString:** &lt;insert the key you copied in Section-3&gt; Click on &quot;Save Configuration Changes&quot; button to save the config.  |
 | Start application | Click on the green &quot;Start&quot; button to start data generation.The status button will change to green and display the text &quot; **Running&quot;** and the **&quot;Events&quot;** counter next to the button will start to increment. |
 
 **NOTE:**  Data generator can also be run in the cloud, using an Azure  [Virtual Machine](https://docs.microsoft.com/en-us/azure/virtual-machines/virtual-machines-windows-hero-tutorial).
@@ -371,16 +371,16 @@ Next, we will configure the various data factory components which will be used i
 
 #### **Deploy Linked Services**
 <br>
-In this solution, we will deploy 5 linked services using scripts already included in the repository you downloaded in step 2.
+In this solution, we will deploy 5 linked services using scripts already included in the repository you downloaded in section 2.
 
 We will create two types of linked service Store and Compute.
 
-| Edit scripts for Azure Storage linked services | Replace the Connection String value in the two files &quot;StorageLinkedService\_Store.txt&quot; and &quot;HDInsightStorageLinkedService\_Store.txt&quot; with the connection string of the storage account aerodemo1 (created in Step 2). |
+| Edit scripts for Azure Storage linked services | Replace the Connection String value in the two files &quot;StorageLinkedService\_Store.txt&quot; and &quot;HDInsightStorageLinkedService\_Store.txt&quot; with the connection string of the storage account aerodemo1 (created in Section 2). |
 | --- | --- |
 | Deploy Azure Store linked services | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New data store&quot; &gt; &quot;Azure storage&quot; will open a draft file. In the editor overwrite the content of the file with that of StorageLinkedService\_Store.txt. Click &quot;Deploy&quot;, wait for deployment to complete.Repeat above step for HDInsightStorageLinkedService\_Store.txt  |
-| Edit scripts for Azure SQL linked services | Replace the Connection String value in the file AzureSqlLinkedService\_Store.txt.with the connection string of the SQL database pmaintenancedb (refer table in Step 6). |
+| Edit scripts for Azure SQL linked services | Replace the Connection String value in the file AzureSqlLinkedService\_Store.txt.with the connection string of the SQL database pmaintenancedb (refer table in Section 6). |
 | Deploy Azure SQL linked services | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New data store&quot; &gt; &quot;Azure SQL&quot; will open a draft file. In the editor overwrite the content of the file with that of AzureSqlLinkedService\_Store.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
-| Edit scripts for Azure Compute linked services for machine learning call | Replace the values in mlEndpoint and APLI key in the file AzuremlBatchEndpointBatchLocation\_Compute.txtwith Request URI and API Key values from the ML experiment (refer table in Step 7). |
+| Edit scripts for Azure Compute linked services for machine learning call | Replace the values in mlEndpoint and APLI key in the file AzuremlBatchEndpointBatchLocation\_Compute.txtwith Request URI and API Key values from the ML experiment (refer table in Section 7). |
 | Deploy Azure Compute linked services for machine learning call | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New Compute&quot; &gt; &quot;Azure ML&quot; will open a draft file. In the file editor overwrite the content of the file with that of AzuremlBatchEndpointBatchLocation\_Compute.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
 | Deploy Azure Compute linked services for on-demand HDInsight cluster | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New Compute&quot; &gt; &quot;HDInsight Cluster&quot; will open a draft file. In the file editor overwrite the content of the file with that of HDInsightLinkedService\_Compute.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
 
@@ -416,7 +416,7 @@ For this solution, we are going to need 3 pipelines to process our raw data from
 
 There are two modifications that the files require.
 
-1. In the MLScoringPipeline and AggregateFlightInfoPipeline files locate the text near the top of the file and replace &lt;accountname&gt; with aerodemo1 (the name of the storage account created in Step 2).
+1. In the MLScoringPipeline and AggregateFlightInfoPipeline files locate the text near the top of the file and replace &lt;accountname&gt; with aerodemo1 (the name of the storage account created in Section 2).
 2. Edit the activity periods for the 3 pipelines. An activity period describes the dates and times that the pipeline should be executed. For a detailed discussion on activity periods click [here](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-pipelines/).
 
 At the bottom of each of the three pipeline scripts there is a section that contains the following settings:
@@ -451,7 +451,7 @@ This section describes how to set up Power BI dashboard to visualize your real-t
 
 # Pre-requisites:
 
-1. Download and install the free software [Power BI desktop](https://powerbi.microsoft.com/documentation/powerbi-desktop-get-the-desktop/). In this solution, Power BI connects to the Azure SQL database (provisioned in Step 6) as its data source, where the prediction results are stored. You must successfully complete Step 6 to proceed in this section.
+1. Download and install the free software [Power BI desktop](https://powerbi.microsoft.com/documentation/powerbi-desktop-get-the-desktop/). In this solution, Power BI connects to the Azure SQL database (provisioned in Section 6) as its data source, where the prediction results are stored. You must successfully complete Section 6 to proceed in this section.
 2. Access to &quot;PredictiveMaintenanceAerospace.pbix&quot; in the &quot;Power BI template&quot; directory in the downloaded repository. This file contains some seed data so that you may create the Power BI dashboard right away.
 3. To setup Power BI dashboard in the hot path, you must have already completed Step 8 and successfully deployed the Datasets in Azure Data factory.
 
@@ -464,56 +464,50 @@ After you deploy the solution, a real prediction will show up in the database wi
 
 Follow the steps below to connect pbix file to the SQL Database (containing prediction results) for visualization.
 
-1. Get the database credentials from SQL database table where you saved the values in Step 6.
+Get the database credentials from SQL database table where you recorded the values in Section 6.
 
 You&#39;ll need database server name, database name, user name and password before moving to next steps. Update the data source of the cold path report file with Power BI Desktop.
 
-1. Double-click the Power BI Template\PredictiveMaintenanceAerospace.pbix file. If you see any warning messages when you open the file, ignore them. On the top of the file, click &#39;Edit Queries&#39;.
+**1.** Double-click the Power BI Template\PredictiveMaintenanceAerospace.pbix file. If you see any warning messages when you open the file, ignore them. On the top of the file, click &#39;Edit Queries&#39;.
 
  ![pib1](./pbi1.png)
 
-1.
-4.You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click on ![pbi2](./pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.
-2. In the pop out window, replace &#39;Server&#39; and &#39;Database&#39; with your own server and database names, and then click &#39;OK&#39;. For server name, make sure you specify the port 1433 (database.windows.net, 1433). Leave the Database field as pmaintenancedb. Ignore the warning messages that appear on the screen.
-3. In the next pop out window, you&#39;ll see two options on the left pane (Windows and Database). Click &#39;Database&#39;, fill in &#39;Username&#39; and &#39;Password&#39; for the SQL Database.
 
-If prompted for &quot;_level to apply these settings to&quot;_, check database level option. Click &#39;Connect&#39;.
+You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click on ![pbi2](./pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.<br>
+**2.**  In the pop out window, replace &#39;Server&#39; and &#39;Database&#39; with your own server and database names, and then click &#39;OK&#39;. For server name, make sure you specify the port 1433 (database.windows.net, 1433). Leave the Database field as pmaintenancedb. Ignore the warning messages that appear on the screen. <br>
+**3.** In the next pop out window, you&#39;ll see two options on the left pane (Windows and Database). Click &#39;Database&#39;, fill in &#39;Username&#39; and &#39;Password&#39; for the SQL Database.
 
-1.
-7.For the second table PMResult click on ![pbi2](./pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right, and repeat steps 4 and 5.
-2. Once you&#39;re guided back to the previous page, from the top menu select Close &amp; Apply.
-3. Click File &gt; Save button to save the changes.
-4. Visualize Seed Data: The Power BI file has now established connection to the server. If your visualizations are empty, make sure you clear the selections on the visualizations by clicking the eraser icon on the upper right corner of the legends.
+If prompted for &quot;_level to apply these settings to&quot;_, check database level option. Click &#39;Connect&#39;. <br>
+**4.** For the second table PMResult click on ![pbi2](./pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right, and repeat steps 2 and 3. <br>
+**5.** Once you&#39;re guided back to the previous page, from the top menu select Close &amp; Apply.
+<br>**6.** Click File &gt; Save button to save the changes. <br> **7.** Visualize Seed Data: The Power BI file has now established connection to the server. If your visualizations are empty, make sure you clear the selections on the visualizations by clicking the eraser icon on the upper right corner of the legends.
 
-Use the refresh button to reflect new data on the visualizations. Initially, you will only see the seed data on your visualizations as the data factory is scheduled to refresh every 3 hours. After 3 hours, you will see new predictions reflected in your visualizations when you refresh the data.
+Use the refresh button to reflect new data on the visualizations. Initially, you will only see the seed data on your visualizations as the data factory is scheduled to refresh every 3 hours. After 3 hours, you will see new predictions reflected in your visualizations when you refresh the data. <br>
+**8.** Publish the cold path dashboard online: This step is optional and requires a Power BI online account (or Office 365 account). In the top menu, click &#39;Publish&#39; and few seconds later a message window appears confirming &quot;Publishing to Power BI Success!&quot; with a green check mark. In the message window, click the link &quot;Open PredictiveMaintenanceAerospace.pbix in Power BI&quot;. To find detailed instructions, see [Publish from Power BI Desktop.](https://powerbi.microsoft.com/en-us/documentation/powerbi-desktop-upload-desktop-files/)
 
-1. Publish the cold path dashboard online: This step is optional and requires a Power BI online account (or Office 365 account). In the top menu, click &#39;Publish&#39; and few seconds later a message window appears confirming &quot;Publishing to Power BI Success!&quot; with a green check mark. In the message window, click the link &quot;Open PredictiveMaintenanceAerospace.pbix in Power BI&quot;. To find detailed instructions, see [Publish from Power BI Desktop.](https://powerbi.microsoft.com/en-us/documentation/powerbi-desktop-upload-desktop-files/)
+**The following steps are to be executed in Power BI online (in My workspace):**
 
-           The following steps are to be executed in Power BI online (in My workspace).
-
-1. From the left menu panel, Click on &quot;My Workspace&quot; &gt; &quot;Reports&quot;. Select the report you just published.
-2.
-2.Once you open the report, click ![pbi3](./pbi3.png)to pin all the visualizations to your dashboard. You may need to create new dashboard or select existing dashboard. To find detailed instructions, see [Pin a tile to a Power BI dashboard from a report](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-pin-a-tile-to-a-dashboard-from-a-report/).
+1. From the left menu panel, Click on &quot;My Workspace&quot; &gt; &quot;Reports&quot;. Select the report you just published.<br>
+2. Once you open the report, click ![pbi3](./pbi3.png)to pin all the visualizations to your dashboard. You may need to create new dashboard or select existing dashboard. To find detailed instructions, see [Pin a tile to a Power BI dashboard from a report](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-pin-a-tile-to-a-dashboard-from-a-report/).
 3. Go to the dashboard page and adjust the size and location of your visualizations and edit their titles. You can find detailed instructions on [how to edit your tiles here](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-edit-a-tile-in-a-dashboard/#rename).
 
 Below is an example dashboard with some cold path visualizations pinned to it. Depending on how long you run your data generator, your numbers on the visualizations may be different.
 
 ![pbi4](./pbi4.png)
 
-1.
-4.To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![pbi5](./pbi5.png)and then choose Schedule Refresh.
-**Note:** If you see a warning massage, click Edit Credentials and make sure your database credentials are the same as those used in Step 6 of this document.
-Expand the Schedule Refresh section. Turn on &quot;keep your data up-to-date&quot;.
-2. Schedule the refresh based on your needs. To find more information, see [Data refresh in Power BI](https://powerbi.microsoft.com/en-us/documentation/powerbi-refresh-data/).
+**4.** To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![pbi5](./pbi5.png)and then choose Schedule Refresh.<br>
+**Note:** If you see a warning massage, click Edit Credentials and make sure your database credentials are the same as those used in Section 6 of this document.
+Expand the Schedule Refresh section. Turn on &quot;keep your data up-to-date&quot;. <br>
+**5.** Schedule the refresh based on your needs. To find more information, see [Data refresh in Power BI](https://powerbi.microsoft.com/en-us/documentation/powerbi-refresh-data/).
 
-1. 2. **Setup Dashboard for the Hot Path**
+### **Setup Dashboard for the Hot Path**
 
 Pre-requisites:
 
-- **** A [Power BI online](http://www.powerbi.com/) account is required to perform the following steps. If you don&#39;t have an account, you can [create one](https://powerbi.microsoft.com/pricing).
-- **** You have already completed Step 8, Deploy Azure Stream Analytics Jobs.
+-  A [Power BI online](http://www.powerbi.com/) account is required to perform the following steps. If you don&#39;t have an account, you can [create one](https://powerbi.microsoft.com/pricing).
+- You have already completed Section 8, Deploy Azure Stream Analytics Jobs.
 
-Now we need to create tiles to visualize streaming data from the Stream Analytics jobs created in Step 8 of this solution deployment.
+Now we need to create tiles to visualize streaming data from the Stream Analytics jobs created in Section 8 of this solution deployment.
 
 In [Power BI online](http://www.powerbi.com/), on the left panel, under &quot;My Workspace&quot; &gt; &quot;Dataset&quot;, the dataset names _aircraftmonitor_, _aircraftalert_, and _flightsbyhour_ should appear. The dataset _flightsbyhour_ may not show up at the same time as the other two datasets due to the nature of the SQL query behind it. However, it should show up after an hour.
 
@@ -525,13 +519,13 @@ Depending on how long you run your data generator, your numbers on the visualiza
 
 For example, to create a tile with title &quot;Fleet View of Sensor 11 vs. Threshold 48.26&quot; follow the steps as below:
 
-1. **1.** On the left panel Dataset section, click on aircraftmonitor.
-2. **2.** Select the line chart icon in the visualization panel.
-3. **3.** In the Fields pane, check the box against &quot;processed&quot;, verify it gets added under &quot;Axis&quot; in the Visualizations pane.
-4. **4.** In the Fields pane, check the boxes against &quot;s11&quot; and &quot;alerts&quot; so that they both appear under &quot;Values&quot;. In the dropdown list against &quot;s11&quot; and &quot;alerts&quot;, change the selection from &quot;Sum&quot; to &quot;Average&quot;.
-5. **5.** Click &quot;Save&quot; on the top menu and name the report &quot;aircraftmonitor&quot;. This report will now get listed under the Reports section in the navigator panel.
-6. **6.** From the top menu, click on &quot;Pin LIVE Page&quot;. In &quot;Pin to Dashboard&quot; dialog box, either create a new dashboard or select an existing dashboard, then click &quot;Pin Live&quot;.
-7. **7.** Go to the dashboard to edit the title to &quot;Fleet View of Sensor 11 vs. Threshold 48.26&quot; and subtitle to &quot;Average across fleet over time&quot;.
+1.  On the left panel Dataset section, click on aircraftmonitor.
+2.  Select the line chart icon in the visualization panel.
+3.  In the Fields pane, check the box against &quot;processed&quot;, verify it gets added under &quot;Axis&quot; in the Visualizations pane.
+4.  In the Fields pane, check the boxes against &quot;s11&quot; and &quot;alerts&quot; so that they both appear under &quot;Values&quot;. In the dropdown list against &quot;s11&quot; and &quot;alerts&quot;, change the selection from &quot;Sum&quot; to &quot;Average&quot;.
+5.  Click &quot;Save&quot; on the top menu and name the report &quot;aircraftmonitor&quot;. This report will now get listed under the Reports section in the navigator panel.
+6.  From the top menu, click on &quot;Pin LIVE Page&quot;. In &quot;Pin to Dashboard&quot; dialog box, either create a new dashboard or select an existing dashboard, then click &quot;Pin Live&quot;.
+7.  Go to the dashboard to edit the title to &quot;Fleet View of Sensor 11 vs. Threshold 48.26&quot; and subtitle to &quot;Average across fleet over time&quot;.
 
 # Execute Solution and Validate
 
