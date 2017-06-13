@@ -6,18 +6,18 @@
 ## [Pre-Requisites](#pre-requisites-1)
 ## [Architecture](#architecture-1)
 ## [Solution Setup](#solution-setup)
->## [Section 1: Create a new Azure Resource Group](#Section 1: Create a new Azure Resource Group)
-   ## [Section 2: Deploy Azure Storage Account](#Section 2: Deploy Azure Storage Account)
-   ## [Section 3: Deploy Azure Event Hub](#Section 3: Deploy Azure Event Hub)
-   ## [Section 4: Deploy Azure Stream Analytics Jobs](#Section 4: Deploy Azure Stream Analytics Jobs)
-   ## [Section 5: Run Application to Generate Data] (#Section 5: Run Application to Generate Data)
-   ## [Section 6: Validate the Data Generation Path](#Section 6: Validate the Data Generation Path)
-   ## [Section 7: Deploy Azure SQL Server and Database](#Section 7: Deploy Azure SQL Server and Database)
-   ## [Section 8: Deploy Azure Studio ML Workspace and Experiment](#Section 8: Deploy Azure Studio ML Workspace and Experiment)
-   ## [Section 9: Deploy Azure Data Factory](#Section 9: Deploy Azure Data Factory)
-   ## [Section 10: Configure Power BI for Visualization](#Section 10: Configure Power BI for Visualization)
-## Execute Solution and Validate
-## Completion and Clean up
+> #### [Section 1: Create a new Azure Resource Group](#section-1--create-a-new-azure-resource-group)
+> #### [Section 2: Deploy Azure Storage Account](#section-2-deploy-azure-storage-account)
+> #### [Section 3: Deploy Azure Event Hub](#section-3-deploy-azure-event-hub)
+> #### [Section 4: Deploy Azure Stream Analytics Jobs](#section-4-deploy-azure-stream-analytics-jobs)
+> #### [Section 5: Run Application to Generate Data](#section-5-run-application-to-generate-data)
+> #### [Section 6: Validate the Data Generation Path](#section-6-validate-the-data-generation-path)
+> #### [Section 7: Deploy Azure SQL Server and Database](#section-7-deploy-azure-sql-server-and-database)
+> #### [Section 8: Deploy Azure Studio ML Workspace and Experiment](#section-8-deploy-azure-studio-ml-workspace-and-experiment)
+> #### [Section 9: Deploy Azure Data Factory](#section-9-deploy-azure-data-factory)
+> #### [Section 10: Configure Power BI for Visualization](#section-10-configure-power-bi-for-visualization)
+## [Execute Solution and Validate](#execute-solution-and-validate-1)
+## [Completion and Clean up](#completion-and-clean-up-1)
 
 
 # Scope
@@ -58,7 +58,7 @@ This predictive maintenance solution monitors aircraft and predicts the remainin
 
 The solution architecture is shown in Figure 1.
 
- ![](data:image/*
+ ![Architecture](./CIS-arch-general.png)
 
   **Figure 1: Architecture diagram for predictive maintenance solution for aerospace**
 
@@ -276,42 +276,41 @@ In this step, we will configure an Azure SQL Database to hold the remaining usef
 | User Name |   |
 | Password |   |
 | Connection String |   | |
-
+<br>
+<br>
+<br>
 ### **Section 8: Deploy Azure Studio ML Workspace and Experiment**
+<br>
 
 The first thing we need to do is to create the workspace. A workspace is where experiments are created. It is also tied to a storage account for intermediate results during experiment processing.
+<br>
+<br>
+<br>
+
 
 | Add Azure ML Workspace | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Data + Analytics&quot; &gt; &quot;Machine Learning Workspace&quot; &gt; Create |
 | --- | --- |
 | Set parameter values | In the form, enter these values **Workspace Name:** aerodemo1 **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US **Storage Account:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Pricing tier:** Standard **Web service plan:** Choose &quot;Create New&quot;, enter service plan name For all other parameters, it is okay to use the default values.  |
-| Copy over the required experiment from the Gallery |
-1. **1.** Click [here](https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf) to navigate to the experiment.
-2. **2.** Click the &quot;Open in Studio&quot; button.
-3. **3.** After ML studio launches, in the dialog box &quot;Copy experiment from Gallery&quot;, select:
-  - **oo**** ML Workspace:** aerodemo1
-  - **oo**** Location:** Central US
-The experiment will now be copied over to aerodemo1 workspace. **NOTE:** This process may take a few minutes. Once copied the experiment will open in the requested workspace. If prompted for upgrade, select OK.  |
+| Copy over the required experiment from the Gallery | **1.** Click [here](https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf) to navigate to the experiment. <br>**2.** Click the &quot;Open in Studio&quot; button.<br> **3.** After ML studio launches, in the dialog box &quot;Copy experiment from Gallery&quot;, select:<br> - ** ML Workspace:** aerodemo1 <br> - ** Location:** Central US <br> The experiment will now be copied over to aerodemo1 workspace. <br> **NOTE:** This process may take a few minutes. Once copied the experiment will open in the requested workspace. If prompted for upgrade, select OK.  |
 | Run ML Experiment | Click &quot;RUN&quot; at the bottom of the page. NOTE: This step will take several minutes to finish and all objects in the graph will have a check box on them to indicate they have run.  |
-| Create the Azure Web Service |
-1. **1.** Click &quot;DEPLOY WEB SERVICE&quot; at the bottom of the page to create the Azure Web Service associated with the experiment. When completed the browser will redirect to the web service home page.
-2. **2.** Copy the &quot;API key&quot; from the web service home page and record it in table 4 below as you will need this information later.
-3. **3.** Click the link **BATCH EXECUTION** under the **API HELP PAGE** section. On the BATCH EXECUTION help page, copy the Request URI under the Request section and record it in table 4 below as you will need this information later.
-**NOTE:**
+| Create the Azure Web Service | **1.** Click &quot;DEPLOY WEB SERVICE&quot; at the bottom of the page to create the Azure Web Service associated with the experiment. When completed the browser will redirect to the web service home page. <br> **2.** Copy the &quot;API key&quot; from the web service home page and record it in table 4 below as you will need this information later. <br> **3.** Click the link **BATCH EXECUTION** under the **API HELP PAGE** section. On the BATCH EXECUTION help page, copy the Request URI under the Request section and record it in table 4 below as you will need this information later.
+<br>**NOTE:**
 1. Copy only the URI part &quot;https:…/jobs&quot; ignoring the URI parameters starting with &quot;?&quot;.
 2. The web service home page can also be found clicking the **WEB SERVICES** button on the left menu of the **studio.azureml.net** page once logged in.
-  |
 
 
-
+<br>
 **Table 4: Azure Web Service Parameters**
+<br>
 
-| API KEY |   |
+| API KEY | <br> |
 | --- | --- |
-| REQUEST URI |   |
+| REQUEST URI | <br>  |
 
+<br>
 
-
-**Section 9: Deploy Azure Data Factory**
+### **Section 9: Deploy Azure Data Factory**
+<br>
 
 We have now created the necessary components to put the data pipeline together using Azure Data Factory. Data factories are orchestration services that move and process data in a dependency flow pipeline.
 
@@ -322,6 +321,8 @@ Another _HIVE_ script is executed to feed the machine learning experiment&#39;s 
 The results of the experiment are put in another blob which is then copied to the Azure SQL Database.
 
 Based on the data, and the flow of data, this data factory will be scheduled to run every 3 hours. This means once the entire flow is configured and enabled, results will not be present until approximately 3.5 hours later.
+<br>
+<br>
 
 | Add Azure Data Factory | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Data + Analytics&quot; &gt; &quot;Data Factory&quot;.  |
 | --- | --- |
@@ -337,7 +338,7 @@ Next, we will configure the various data factory components which will be used i
 **Pipelines** contain one or more activities to be executed.
 
 #### **Deploy Linked Services**
-
+<br>
 In this solution, we will deploy 5 linked services using scripts already included in the repository you downloaded in step 2.
 
 We will create two types of linked service Store and Compute.
@@ -355,24 +356,18 @@ We will create two types of linked service Store and Compute.
 
 The linked services are now complete; we will now move on to creating the data sets.
 
-|   |
-| --- |
-
-
-
-
-
-
-
+|  TIP: HDInsight clusters request a certain number of resources from your subscription. It is possible that your subscription may be out of resources, or enough resources (cores) required for this data factory. If you have reached the limit for the region chosen for this deployment you can use the following steps to help resolve this: <br> - Create a new resource group in another region<br>- Follow the steps above to create the Azure Data Factory in that region. |
+|---|
+<br>
 #### **Deploy Datasets**
-
+<br>
 For this solution, we are going to need 6 data sets that are of type Azure Storage blob and Azure SQL tables.
 
-| Deploy Data Sets | In Azure data factory aerodemo1 blade, click on &quot;Author and Deploy&quot;.At the top of the tab, click &quot;New dataset/Azure blob storage&quot; EXCEPT for the content of SQLScoredResultTable.txt which you will choose &quot;New dataset/Azure SQL&quot;Copy the contents of the file into the editor.Click Deploy  |
-| --- | --- |
+| Deploy Data Sets | In Azure data factory aerodemo1 blade, click on &quot;Author and Deploy&quot;.At the top of the tab, click &quot;New dataset/Azure blob storage&quot; EXCEPT for the content of SQLScoredResultTable.txt which you will choose &quot;New dataset/Azure SQL&quot;Copy the contents of the file into the editor. Click Deploy  |
+| --- |
 
 #### **Deploy Pipelines**
-
+<br>
 For this solution, we are going to need 3 pipelines to process our raw data from stream analytics, send the aggregated values to the machine learning experiment, and then finally move those results to our SQL database.
 
 
@@ -384,15 +379,15 @@ There are two modifications that the files require.
 
 At the bottom of each of the three pipeline scripts there is a section that contains the following settings:
 
-    &quot;start&quot;: &quot;[Start Activity Period UTC]&quot;,
+    "start": ""[Start Activity Period UTC]"",
 
-    &quot;end&quot;: &quot;[End Activity Period UTC]&quot;,
+    "end": ""[End Activity Period UTC]"",
 
 These fields identify when the pipeline should be active and are in UTC time. So, if you are in EST and you want to set this active from March 11th from 12:00 PM EST to 5:00 PM EST you would modify these as follows:
 
-    &quot;start&quot;: &quot;2016-03-11T12:00:00Z&quot;,
+    "start": "2016-03-11T12:00:00Z",
 
-    &quot;end&quot;: &quot;2016-03-11T17:00:00Z&quot;,
+    "end": "2016-03-11T17:00:00Z",
 
 When the pipelines are active you will incur some expense.
 
@@ -402,14 +397,14 @@ When the pipelines are active you will incur some expense.
 | --- | --- |
 
 #### **Check Data Factory**
-
+<br>
 From the data factory blade,
 
 1. To see the layout of the factory, click &quot;Diagram&quot; **.**
 2. Click on the &quot;Monitor &amp; Manage&quot; button and validate your credentials again if prompted. If there are errors being reported, navigate back to portal.azure.com to the data factory and click on the datasets to determine where in the pipeline issues have been detected.
 
 ### **Section 10: Configure Power BI for Visualization**
-
+<br>
 This section describes how to set up Power BI dashboard to visualize your real-time data from Azure Stream Analytics (hot path), as well as batch prediction results from Azure machine learning (cold path).
 
 # Pre-requisites:
@@ -418,8 +413,9 @@ This section describes how to set up Power BI dashboard to visualize your real-t
 2. Access to &quot;PredictiveMaintenanceAerospace.pbix&quot; in the &quot;Power BI template&quot; directory in the downloaded repository. This file contains some seed data so that you may create the Power BI dashboard right away.
 3. To setup Power BI dashboard in the hot path, you must have already completed Step 8 and successfully deployed the Datasets in Azure Data factory.
 
-1. 1. **Setup Dashboard for Cold path**
 
+### **Setup Dashboard for Cold path**
+<br>
 In the cold path data pipeline, the essential goal is to get the predictive RUL (remaining useful life) of each aircraft engine once it finishes a flight (cycle). The prediction result is updated every 3 hours for predicting the aircraft engines that have finished a flight over the past 3 hours.
 
 After you deploy the solution, a real prediction will show up in the database within 3 hours.
@@ -435,7 +431,7 @@ You&#39;ll need database server name, database name, user name and password befo
  ![](data:image/*;
 
 1.
-4.You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click ![](data:image/*;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAG8SURBVDhPpZM9rwFREIZfro8oJKhFfIVIJEgkEon4A3qFVlT8hxsavU6BWqFQED9AKQo9kWiEQiNRYO++s2ex95b3SU52zcw7Zs7M2iKRiIZ/YFfPFy6XC6lUSv0ysNlsSCaT4vuNJUE+n8discB4PEYulxOh3W5HoVDAZDLBbDZDNptV0QYO9RRutxtCoZAI+/0+BoMBHA4H6vU6PB4PgsEgrterijaw3AGFFJXLZWV5o2ka5vM5ms2mshhICxSa5TqdTnFQ8Hw+5fCduN3uV6zJl9/v/2ZfxWIR1WoVlUpFBNPpFLVaDcPhELFYDNFoFOFwGF6vF7pGWjudTqBDj7dyv9+1TCajsT0evSXleXM+n8UnLTwej1e5hCWaI/t8J4wx48mXz+f75uUsl0scDgcZJUUsd7VaIRAIoN1uy3T0ytDr9TAajWRKl8vl7xToLJVKyvJGr1r2oNVqKYuBZZGYgJMwYak8JmyFMZ9YEqTTaZkG/+14PKLT6aDb7cptU8j9SCQSKtrAsokM2m630O8FjUYDm81GbOv1Wsa53+9lfJ/8+Rq5SFzZ3W6nLEbieDwuyT9bIv/8nIEfs07SCSYX4BEAAAAASUVORK5CYII=)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.
+4.You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click ![](data:image/*;base64,)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.
 2. In the pop out window, replace &#39;Server&#39; and &#39;Database&#39; with your own server and database names, and then click &#39;OK&#39;. For server name, make sure you specify the port 1433 (database.windows.net, 1433). Leave the Database field as pmaintenancedb. Ignore the warning messages that appear on the screen.
 3. In the next pop out window, you&#39;ll see two options on the left pane (Windows and Database). Click &#39;Database&#39;, fill in &#39;Username&#39; and &#39;Password&#39; for the SQL Database.
 
@@ -464,7 +460,7 @@ Below is an example dashboard with some cold path visualizations pinned to it. D
  ![](data:image/*;
 
 1.
-4.To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![](data:image/*;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAQCAYAAAF/1l8+AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABtSURBVDhPY7C1tf2PjJEEYtAF4BwnTBl0TJ4kYYnWkpj/ZXFO/zM90STQMV4H4MKjmqB4ADV5ZtaC6biyJjBd0grhI+PhGBDk4BFqESiJgAoCCN8JnFRAhQKEHwNOMrACAhcejSOyMZ0ssv0PAM3Qzj3jApNzAAAAAElFTkSuQmCC)and then choose Schedule Refresh.
+4.To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![](data:image/*;base64,C)and then choose Schedule Refresh.
 **Note:** If you see a warning massage, click Edit Credentials and make sure your database credentials are the same as those used in Step 6 of this document.
 Expand the Schedule Refresh section. Turn on &quot;keep your data up-to-date&quot;.
 2. Schedule the refresh based on your needs. To find more information, see [Data refresh in Power BI](https://powerbi.microsoft.com/en-us/documentation/powerbi-refresh-data/).
@@ -530,6 +526,6 @@ However, if the table is not receiving results in approximately 3.5 hours after 
 
 # Completion and Clean up
 
-### After completing the solution and evaluating the results, to avoid further billing on your subscription, we recommend that you stop the data generator, ASA jobs. Clean up any ML experiments and Azure web services from ML Studio.
+After completing the solution and evaluating the results, to avoid further billing on your subscription, we recommend that you stop the data generator, ASA jobs. Clean up any ML experiments and Azure web services from ML Studio.
 
-### Finally delete the resource group(s) you created to deploy this solution template. This will remove all Azure resources (services) provisioned under the resource groups.
+Finally delete the resource group(s) you created to deploy this solution template. This will remove all Azure resources (services) provisioned under the resource groups.
