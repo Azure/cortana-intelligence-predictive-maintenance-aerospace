@@ -97,7 +97,7 @@ Now we will walk through the actual provisioning steps.
 
 | Add a new resource group | In Azure Portal&#39;s left panel, click on Resource groups icon . In resource group blade, click on &quot;Add&quot;. |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Name:** aerodemo1 **Subscription:** &lt;your Azure subscription name&gt; **Location:** Central US |
+| Set parameter values | In the form, enter these values <br> **Name:** aerodemo1 <br>**Subscription:** &lt;your Azure subscription name&gt;<br> **Location:** Central US |
 | Provision | Click the &quot;Create&quot; button. |
 
 ### **Section 2: Deploy Azure Storage Account**
@@ -108,7 +108,7 @@ An Azure Storage account is used for storage of incoming aircraft sensor reading
 
 | Add a new Azure Storage account | In Azure Portal, Click on &quot;+&quot; &gt; &quot;Storage&quot; &gt; &quot;Storage Account (blob, file, table square)&quot; |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Name:** aerodemo1 **Performance:** Standard **Replication:** Location Replication Strategy (LRS) **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central USFor all other parameters use default selections.  |
+| Set parameter values | In the form, enter these values <br>**Name:** aerodemo1 <br>**Performance:** Standard <br>**Replication:** Location Replication Strategy (LRS) <br>**Subscription:** &lt;your Azure subscription name&gt; <br>**Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US <br>For all other parameters use default selections.  |
 | Provision | Click the &quot;Create&quot; button. It takes few minutes to create the storage account |
 
 <br>
@@ -149,7 +149,7 @@ Azure Event Hubs is a highly scalable service that can ingest millions of record
 
 | Add Azure Event Hub Namespace | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Internet of Things&quot; &gt; &quot;Event hub&quot; &gt; &quot;Create&quot;. |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Name:** aerodemo1 **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US  |
+| Set parameter values | In the form, enter these values <br>**Name:** aerodemo1 <br>**Subscription:** &lt;your Azure subscription name&gt; <br>**Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 <br>**Location:** Central US  |
 | Provision Azure Event Hub Namespace | Click the &quot;Create&quot; button. Note: This will create the Event hub namespace. In the top panel of this panel click on &quot;+Event hub&quot; to provision a new event hub.   |
 | Set Event hub parameter values | **Name:** aerodemo1\_EHFor all other parameters use default value selections.    |
 | Provision Azure Event Hub | Click the &quot;Create&quot; button.   |
@@ -187,8 +187,8 @@ The connection string and event hub name information will be needed to configure
 
 | Add Azure Stream Analytics (ASA) jobs | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Data + Analytics&quot; &gt; &quot;Stream Analytics job&quot;. |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Name:** maintenancesa02asablob **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US  |
-| Provision ASA jobs | Click the &quot;Create&quot; button. **NOTE:** This will create stream analytics job maintenancesa02asablob.Repeat above steps to create stream the second job maintenancesa02asapbi.  |
+| Set parameter values | In the form, enter these values <br>**Name:** maintenancesa02asablob <br>**Subscription:** &lt;your Azure subscription name&gt; <br>**Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 <br>**Location:** Central US  |
+| Provision ASA jobs | Click the &quot;Create&quot; button. <br>**NOTE:** This will create stream analytics job maintenancesa02asablob.Repeat above steps to create stream the second job maintenancesa02asapbi.  |
 
 <br>
 
@@ -198,7 +198,7 @@ For each job, we need to configure their respective input, query and output. Con
 
 | Add Input for (ASA) job | In the ASA blade for maintenancesa02asablob job, select &quot;Job Topology&quot; &gt; &quot;Input&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Import option:** Provide event hub settings manually **Service bus namespace:** &lt;name of event hub namespace e.g. aerodemo1&gt; **Event hub name:** &lt;name of the event hub e.g. aerodemo1\_EH&gt; **Event hub policy name:** RootManageSharedAccessKey **Event hub policy key:** &lt;insert the key you copied in Section-3&gt; **Event hub consumer group:** blobcgClick &quot;Create&quot; button to provision the input. **NOTE:** Repeat above steps to create input for the second job maintenancesa02asapbi, using identical parameter values, **except** for &quot;Event hub consumer group&quot; enter value as &quot;pbicg&quot;   |
+| Set parameter values | In the form, enter these values <br>**Import option:** Provide event hub settings manually <br>**Service bus namespace:** &lt;name of event hub namespace e.g. aerodemo1&gt; <br>**Event hub name:** &lt;name of the event hub e.g. aerodemo1\_EH&gt; <br>**Event hub policy name:** RootManageSharedAccessKey <br>**Event hub policy key:** &lt;insert the key you copied in Section-3&gt; <br>**Event hub consumer group:** blobcgClick &quot;Create&quot; button to provision the input. <br>**NOTE:** Repeat above steps to create input for the second job maintenancesa02asapbi, using identical parameter values, **except** for &quot;Event hub consumer group&quot; enter value as &quot;pbicg&quot;   |
 
 <br>
 
@@ -210,7 +210,7 @@ For each job, we need to configure their respective input, query and output. Con
 
 | Add Output for (ASA) job maintenancesa02asablob | In maintenancesa02asablob blade, select &quot;Job Topology&quot; &gt; &quot;Output&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Output Alias:** RawDataBlobSink **Import option:** Provide blob storage settings manually **Storage account:** &lt;name of storage e.g. aerodemo1&gt; **Storage account key:** &lt;insert the key you copied in Section-2&gt; **Container:** maintenancesadata **Path pattern:** rawdata/date={date}/hour={time} **Date format:** YYYY-MM-DD_[This defines the format of the path strings in the storage account and is required for the HIVE scripts that will be executed as part of the larger data flow.]_ **Time format:** HH  |
+| Set parameter values | In the form, enter these values <br>**Output Alias:** RawDataBlobSink <br>**Import option:** Provide blob storage settings manually <br>**Storage account:** &lt;name of storage e.g. aerodemo1&gt; <br>**Storage account key:** &lt;insert the key you copied in Section-2&gt; <br>**Container:** maintenancesadata <br>**Path pattern:** rawdata/date={date}/hour={time} <br>**Date format:** YYYY-MM-DD_[This defines the format of the path strings in the storage account and is required for the HIVE scripts that will be executed as part of the larger data flow.]_ <br>**Time format:** HH  |
 
 
 
@@ -220,7 +220,7 @@ Next, configure three outputs, namely, &quot;Aircraftmonitor&quot;, &quot;Aircra
 
 | Add Output for (ASA) job maintenancesa02asapbi | In maintenancesa02asapbi blade, select &quot;Job Topology&quot; &gt; &quot;Output&quot; &gt; &quot;+Add&quot; |
 | --- | --- |
-| Set parameter values | In the form for each output, enter the values as shown below: **NOTE:** In the steps below replace &lt;value&gt; with the three output names &quot;Aircraftmonitor&quot;, &quot;Aircraftalert&quot;, and &quot;Flightsbyhour&quot;, as you repeat these steps three times.  **Output Alias:** &lt;value&gt; **Sink:** Power BI Click the _Authorize_ button to link to your Office 365 subscription.  **DataSet Name:** &lt;value&gt; **Table Name:** &lt;value&gt; Click on &#39;Create&#39; button to create the new output.  |
+| Set parameter values | In the form for each output, enter the values as shown below: <br>**NOTE:** In the steps below replace &lt;value&gt; with the three output names &quot;Aircraftmonitor&quot;, &quot;Aircraftalert&quot;, and &quot;Flightsbyhour&quot;, as you repeat these steps three times.  <br>**Output Alias:** &lt;value&gt; <br>**Sink:** Power BI Click the _Authorize_ button to link to your Office 365 subscription.  <br>**DataSet Name:** &lt;value&gt; <br>**Table Name:** &lt;value&gt; Click on &#39;Create&#39; button to create the new output.  |
 
 
 
@@ -232,7 +232,7 @@ Now that we have the event hub and stream analytics configured we can configure 
 
 | Launch application | In the repository, you downloaded in Section 2, open the &quot;Predictive Maintenance Data Generator&quot; folder Start the application &quot;Generator&quot;  |
 | --- | --- |
-| Configure application | In the Generator user interface, configure **EventHubName** : &lt;event hub name, e.g.  aerodemo1\_EH&gt; **EventHubConnectionString:** &lt;insert the key you copied in Section-3&gt; Click on &quot;Save Configuration Changes&quot; button to save the config.  |
+| Configure application | In the Generator user interface, configure <br>**EventHubName** : &lt;event hub name, e.g.  aerodemo1\_EH&gt;<br> **EventHubConnectionString:** &lt;insert the key you copied in Section-3&gt; Click on &quot;Save Configuration Changes&quot; button to save the config.  |
 | Start application | Click on the green &quot;Start&quot; button to start data generation.The status button will change to green and display the text &quot; **Running&quot;** and the **&quot;Events&quot;** counter next to the button will start to increment. |
 
 **NOTE:**  Data generator can also be run in the cloud, using an Azure  [Virtual Machine](https://docs.microsoft.com/en-us/azure/virtual-machines/virtual-machines-windows-hero-tutorial).
@@ -321,7 +321,7 @@ The first thing we need to do is to create the workspace. A workspace is where e
 
 | Add Azure ML Workspace | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Data + Analytics&quot; &gt; &quot;Machine Learning Workspace&quot; &gt; Create |
 | --- | --- |
-| Set parameter values | In the form, enter these values **Workspace Name:** aerodemo1 **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US **Storage Account:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Pricing tier:** Standard **Web service plan:** Choose &quot;Create New&quot;, enter service plan name For all other parameters, it is okay to use the default values.  |
+| Set parameter values | In the form, enter these values <br>**Workspace Name:** aerodemo1 <br>**Subscription:** &lt;your Azure subscription name&gt; <br>**Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US <br>**Storage Account:** Choose &quot;Use Existing&quot;; specify aerodemo1 <br>**Pricing tier:** Standard <br>**Web service plan:** Choose &quot;Create New&quot;, enter service plan name For all other parameters, it is okay to use the default values.  |
 | Copy over the required experiment from the Gallery | **1.** Click [here](https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf) to navigate to the experiment. <br>**2.** Click the &quot;Open in Studio&quot; button.<br> **3.** After ML studio launches, in the dialog box &quot;Copy experiment from Gallery&quot;, select:<br> - ** ML Workspace:** aerodemo1 <br> - ** Location:** Central US <br> The experiment will now be copied over to aerodemo1 workspace. <br> **NOTE:** This process may take a few minutes. Once copied the experiment will open in the requested workspace. If prompted for upgrade, select OK.  |
 | Run ML Experiment | Click &quot;RUN&quot; at the bottom of the page. NOTE: This step will take several minutes to finish and all objects in the graph will have a check box on them to indicate they have run.  |
 | Create the Azure Web Service | **1.** Click &quot;DEPLOY WEB SERVICE&quot; at the bottom of the page to create the Azure Web Service associated with the experiment. When completed the browser will redirect to the web service home page. <br> **2.** Copy the &quot;API key&quot; from the web service home page and record it in table 4 below as you will need this information later. <br> **3.** Click the link **BATCH EXECUTION** under the **API HELP PAGE** section. On the BATCH EXECUTION help page, copy the Request URI under the Request section and record it in table 4 below as you will need this information later.
