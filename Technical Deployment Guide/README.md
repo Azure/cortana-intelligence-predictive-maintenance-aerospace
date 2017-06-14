@@ -495,7 +495,7 @@ Below is an example dashboard with some cold path visualizations pinned to it. D
 
 ![pbi4](Images/pbi4.png)
 
-**4.** To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![pbi5](images/pbi5.png)and then choose Schedule Refresh.<br>
+**4.** To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![pbi5](Images/pbi5.png)and then choose Schedule Refresh.<br>
 **Note:** If you see a warning massage, click Edit Credentials and make sure your database credentials are the same as those used in Section 6 of this document.
 Expand the Schedule Refresh section. Turn on &quot;keep your data up-to-date&quot;. <br>
 **5.** Schedule the refresh based on your needs. To find more information, see [Data refresh in Power BI](https://powerbi.microsoft.com/en-us/documentation/powerbi-refresh-data/).
