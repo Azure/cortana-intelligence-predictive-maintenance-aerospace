@@ -1,566 +1,694 @@
-# Predictive Maintenance for Aerospace Using Cortana Intelligence Suite: Technical Guide for Manual Deployment
+The deployment guide below provides a full set of instructions on how to put together and deploy a predictive maintenance solution using the Cortana Intelligence Suite.The **Developer Journey Map** walks through the different components created as part of the end-to-end solution. 
 
-# Table of Contents
+**For technical problems or questions about deploying this solution, please post in the issues tab of the repository.**
 
-- [Scope](#scope)
-- [Pre-Requisites](#pre-requisites)
-- [Architecture](#architecture)
-- [Solution Setup](#solution-setup)
-- [Section 1: Create a new Azure Resource Group](#section-1--create-a-new-azure-resource-group)
-- [Section 2: Deploy Azure Storage Account](#section-2-deploy-azure-storage-account)
-- [Section 3: Deploy Azure Event Hub](#section-3-deploy-azure-event-hub)
-- [Section 4: Deploy Azure Stream Analytics Jobs](#section-4-deploy-azure-stream-analytics-jobs)
-- [Section 5: Run Application to Generate Data](#section-5-run-application-to-generate-data)
-- [Section 6: Validate the Data Generation Path](#section-6-validate-the-data-generation-path)
-- [Section 7: Deploy Azure SQL Server and Database](#section-7-deploy-azure-sql-server-and-database)
-- [Section 8: Deploy Azure Studio ML Workspace and Experiment](#section-8-deploy-azure-studio-ml-workspace-and-experiment)
-- [Section 9: Deploy Azure Data Factory](#section-9-deploy-azure-data-factory)
-- [Section 10: Configure Power BI for Visualization](#section-10-configure-power-bi-for-visualization)
-- [Execute Solution and Validate](#execute-solution-and-validate)
-- [Completion and Clean up](#completion-and-clean-up)
+# Deployment Guide 
 
+There is a lot of documentation around the Cortana Intelligence Suite Solution Template for 
+predictive maintenance for aerospace that predicts the remaining useful life of an aircraft 
+engine.
+     
+There is an overview [blog post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/) and a [technical guide](https://azure.microsoft.com/en-us/documentation/articles/cortana-analytics-technical-guide-predictive-maintenance) that provide a higher level overview of the [solution template](https://gallery.cortanaintelligence.com/Solution/Predictive-Maintenance-for-Aerospace-4). 
 
-# Scope
+This information is incredibly useful to understand the concepts behind and technology that 
+went into creating it but does not provide the deep systems understanding that implementers 
+need to understand the design in total. 
 
-There are multiple documents on predictive maintenance for aerospace using Cortana Intelligence Suite Solution Template that monitors and predicts the remaining useful life (RUL) of an aircraft engine.
+This (doc/blob/post) explains how to build the solution piece by piece and in many cases 
+explains why certain decisions were made. The manual process gives an implementer an inside 
+view on how the solution is built and an understanding of each of the components	.
 
-There is an overview [blog post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/) and a [technical guide](https://azure.microsoft.com/en-us/documentation/articles/cortana-analytics-technical-guide-predictive-maintenance) that provide a higher level overview of the [solution template](https://gallery.cortanaintelligence.com/Solution/Predictive-Maintenance-for-Aerospace-4).
-
-The [one-click solution deployment template](https://gallery.cortanaintelligence.com/Solution/Predictive-Maintenance-for-Aerospace-4) is useful to understand the concepts behind and technology that went into creating this solution. However, it does not provide the deep systems understanding that implementers need to understand the design in total.
-
-This technical deployment guide explains how to build the solution piece by piece and in many cases, explains why certain decisions were made. The manual process gives an implementer an inside view on how the solution is built and an understanding of each of the components.
-
-It provides a full set of instructions on how to put together and deploy a predictive maintenance solution using the Cortana Intelligence Suite. The **Developer Journey Map** walks through the different components created as part of the end-to-end solution.
-
-**For technical problems or questions about deploying this solution, please post in the issues tab of the** [repository](https://github.com/Azure/cortana-intelligence-predictive-maintenance-aerospace) **.**
-
-
-
-# Pre-Requisites
-
-To implement this demo, you need an active Microsoft Azure subscription [insert link to get subscription].
-
-Following are a list of accounts and software you will need to create this solution.
-
-Following are a list of accounts and software you will need to create this solution.
-
-1. [The full contents of Github file repository](https://github.com/Azure/cortana-intelligence-predictive-maintenance-aerospace) (download the zipped file).
-2. [A Studio ML account](http://studio.azureml.net)
-3. A [Microsoft Office 365 subscription](https://login.live.com/) for Power BI access.
-4. [SQL Server Management Studio](https://msdn.microsoft.com/en-us/library/mt238290.aspx) or a similar tool to access a SQL server database.
-5. [Microsoft Azure Storage Explorer](http://storageexplorer.com/)
-6. [Power BI Desktop](https://powerbi.microsoft.com/en-us/desktop)
-7. Internet Access
-
+# Requirements
+This section contains required accounts and software you will need to create this solution.
+1.	The full contents of the zip file.
+2.	A Microsoft Azure subscription. 
+3.	A Studio ML account (http://studio.azureml.net)
+4.	A Microsoft Office 365 subscription for Power BI access.
+5.	A network connection
+6.	[SQL Server Management Studio](https://msdn.microsoft.com/en-us/library/mt238290.aspx ) or another similar tool to access a SQL server database.
+7.	[Microsoft Azure Storage Explorer](http://storageexplorer.com/)
+8.	[Power BI Desktop](https://powerbi.microsoft.com/en-us/desktop)
+ 
 # Architecture
-
-This predictive maintenance solution monitors aircraft and predicts the remaining useful life of aircraft engine components, based on publicly available data. It is an end-to-end solution that brings together several Azure services involving data ingestion, data storage, data processing and advanced analytics — all essential for building a predictive maintenance solution.
-
-The solution architecture is shown in Figure 1.
-
- ![Architecture](Images/CIS-arch-aerospace.png)
-
-  **Figure 1: Architecture diagram for predictive maintenance solution for aerospace**
-
-Following is a brief explanation of each component of the solution architecture and the overall workflow:
-
-1. The solution repository provides you a data generator as **data source.** This data source is comprised of or derived from publicly available data from the NASA data repository using the Turbofan Engine Degradation Simulation Data Set. You can run it from your desktop or install in a virtual machine in your Azure account.
-2. This synthetic data feeds into the **Azure Event Hubs** service as data points.
-3. _Stream Analytics_ provides real-time insights on engine health and stores that data in long-term storage for more complex, compute-intensive batch analytics. In this template, two **Azure Stream Analytics** jobs analyze the data to provide near real-time analytics on the input stream from the event hub. One of the Stream Analytics jobs archives all raw incoming events to the **Azure Storage** service for later processing by the **Azure Data Factory** service, and the other publishes results onto a **Power BI** dashboard.
-4. The **HDInsight** service is used to run Hive scripts (orchestrated by **Azure Data Factory** ) to provide aggregations at scale on the raw sensor data stored in Azure Storage by the Stream Analytics job.
-5. The Azure **Machine Learning** service is used (orchestrated by **Azure Data Factory** ) to make predictions on the remaining useful life (RUL) of particular aircraft engine based on the inputs received from the **HDInsight**
-6. **Azure SQL Database** is used (managed by **Azure Data Factory** ) to store the prediction results received from the **Azure Machine Learning** service. These results are then consumed in the **Power BI** dashboard. A stored procedure is deployed in the SQL Database and later invoked in Azure Data Factory pipeline to store the ML prediction results into the scoring result table.
-7. **Azure Data Factory** handles orchestration, scheduling, and monitoring of the batch processing pipeline.
-8. Finally, **Power BI** is used for results visualization. A _Power BI_ dashboard can be built on top of the pipeline such that aircraft technicians can monitor the sensor data from an airplane or across the fleet in real time and use visualizations to schedule engine maintenance.
-
-While this solution is customized for aircraft monitoring, it can easily be generalized for other predictive maintenance scenarios.
-
-#
-
-# Solution Setup
-
-Unless otherwise stated, to setup this solution provision **all Azure services from** [http://portal.azure.com/](http://portal.azure.com/) referred henceforth as **Azure portal**.
-
-Several services, such as Azure Storage, require a unique name for the storage account across a region. Hence to give you a unique identifier, we will use the following naming convention for this solution.
-
-**aerodemo[UI][N]**
-
-Characters must be entered in lowercase. For example, user Robert Smith will name Azure services he creates as _aerodemors05_
-
-In this guide, for the sake of simplicity we&#39;ll use _aerodemo1_ as the placeholder name for all services.
-
-Now we will walk through the actual provisioning steps.
-
-### **Section 1:**  **Create a new Azure Resource Group**
-
- As there are several services, it is suggested to group these services under a single [Azure Resource Group](https://azure.microsoft.com/en-us/documentation/articles/resource-group-overview/). A resource group is a container that holds related resources for an Azure solution.
-
-| Add a new resource group | In Azure Portal&#39;s left panel, click on Resource groups icon . In resource group blade, click on &quot;Add&quot;. |
-| --- | --- |
-| Set parameter values | In the form, enter these values **Name:** aerodemo1 **Subscription:** &lt;your Azure subscription name&gt; **Location:** Central US |
-| Provision | Click the &quot;Create&quot; button. |
-
-### **Section 2: Deploy Azure Storage Account**
-
-An Azure Storage account is used for storage of incoming aircraft sensor readings through Azure Event Hub and Azure Stream Analytics. The storage account is also used to hold HIVE scripts that will be executed from Azure Data Factory when processing the sensor data to pass into the Azure Machine Learning experiment.
-
-<br>
-
-| Add a new Azure Storage account | In Azure Portal, Click on &quot;+&quot; &gt; &quot;Storage&quot; &gt; &quot;Storage Account (blob, file, table square)&quot; |
-| --- | --- |
-| Set parameter values | In the form, enter these values **Name:** aerodemo1 **Performance:** Standard **Replication:** Location Replication Strategy (LRS) **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central USFor all other parameters use default selections.  |
-| Provision | Click the &quot;Create&quot; button. It takes few minutes to create the storage account |
-
-<br>
-
-
-Now that the storage account has been created we need to collect some information about it to be used by other services like the Azure Data Factory.
-
-To retrieve the primary connection string for the Storage account, in the storage account aerodemo1 blade, select &quot;Settings&quot; &gt; Access Keys &gt; Click on the copy button next to &quot;Primary Connection String&quot;.
-
-Record it in table 1 below for future reference.
-
-**Table 1: Azure Storage Account**
-
-| **Storage Account Name** | **Primary Connection String** |
-| --- | --- |
-| aerodemo1 | &lt;copied connection string value&gt; |
-
-#### **Add Blob Containers**
-
-
-**Pre-requisites:**
-
-1. To explore data in Azure storage, download and install the [Microsoft Azure Storage Explorer](http://storageexplorer.com/) (or any similar tool)
-2. From Azure Github, download and save the zipped repository or clone it to your local computer. NOTE: The zipped folder name is very long. To avoid errors due to long path name, either rename the folder before you unzip or save it to a folder which has a short path (e.g. C:/Demo).
-
-Execute below steps to add two blob containers, namely, _maintenancesadata_ and _maintenancesascript._ <br>
-
-| Create new Blob Container _maintenancesadata_ | In Storage account aerodemo1 blade, select &quot;Overview&quot; &gt; &quot;Blobs&quot; &gt; &quot;+&quot;. Specify blob name as _maintenancesadata._ Click on the &quot;Create&quot; button. |
-| --- | --- |
-| Create new Blob Container _maintenancesascript_ | In Storage account aerodemo1 blade, select &quot;Overview&quot; &gt; &quot;Blobs&quot; &gt; &quot;+&quot;. Specify blob name as _maintenancesascript._ Click on the &quot;Create&quot; button. |
-| Upload HIVE queries for data processing | **1.** Click on the _maintenancesascript_ container. This will bring up a panel on the right. Click the &quot;Upload&quot; button. <br> **2.** Browse to the &quot;Storage Files\script&quot; folder in the repository you downloaded. This will upload the required HIVE queries that will be used in data processing later in this deployment.
-
-
-
-### **Section 3: Deploy Azure Event Hub**
-
-Azure Event Hubs is a highly scalable service that can ingest millions of records per second. In this solution, the event hub will be the ingestion point for the aircraft sensor data.
-
-| Add Azure Event Hub Namespace | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Internet of Things&quot; &gt; &quot;Event hub&quot; &gt; &quot;Create&quot;. |
-| --- | --- |
-| Set parameter values | In the form, enter these values **Name:** aerodemo1 **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US  |
-| Provision Azure Event Hub Namespace | Click the &quot;Create&quot; button. Note: This will create the Event hub namespace. In the top panel of this panel click on &quot;+Event hub&quot; to provision a new event hub.   |
-| Set Event hub parameter values | **Name:** aerodemo1\_EHFor all other parameters use default value selections.    |
-| Provision Azure Event Hub | Click the &quot;Create&quot; button.   |
-
-This creates the Azure Event Hub we need to receive aircraft sensor readings. The Event Hub will be consumed by two Azure Stream Analytics jobs. To ensure processing of the hub is successful we need to create [consumer groups](https://azure.microsoft.com/en-us/documentation/articles/event-hubs-programming-guide/#event-consumers) on the hub.
-
-| Create Consumer Group | Click event hubaerodemo1\_EH &gt; In the menu panel select &quot;Consumer Group&quot; under Entities.Click &quot;+Consumer Group&quot; to add new consumer group, provide name: blobcg_._Repeat above step to add consumer group, name: pbicg  |
-| --- | --- |
-
-<br>
-
-The connection string and event hub name information will be needed to configure the desktop data generation tool that simulates aircraft sensor readings being sent to the event hub.
-
-<br>
-
-| Get Connection String for Event hub namespace | **1.** In Event hub namespace &quot;aerodemo1&quot;, select &quot;Overview&quot; &gt; &quot;Connection Strings&quot;. **2.** This brings up the shared access policy window. Click policy &quot;RootManageSharedAccessKey&quot;, and copy the &quot;Connection string–primary key&quot; value. **3.** Record the connection string value in table 2: Azure Event Hub.
-| --- | --- |
-
-**Table 2: Azure Event Hub**
-
-| **Azure Event Hub Namespace** | **Primary Connection String** |
-| --- | --- |
-|  | |
-
-
-
-
-### **Section 4: Deploy Azure Stream Analytics Jobs**
-
-[Azure Stream Analytics](https://azure.microsoft.com/en-us/services/stream-analytics/) (ASA) allows you to create near real-time insights from devices, sensors, infrastructure and applications. For this solution, we will deploy two Azure Stream Analytics jobs, namely, **maintenancesa02asablob** and **maintenancesa02asapbi,** to read sensor data from the Azure Event Hub.
-
-**maintenancesa02asablob** simply pipes all the sensor readings into our Azure Storage for later processing.
-
-**maintenancesa02asapbi** populates Power BI datasets that will be used on the dashboard. Although we have not set up Power BI yet, we will create both stream jobs now.
-
-| Add Azure Stream Analytics (ASA) jobs | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Data + Analytics&quot; &gt; &quot;Stream Analytics job&quot;. |
-| --- | --- |
-| Set parameter values | In the form, enter these values **Name:** maintenancesa02asablob **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US  |
-| Provision ASA jobs | Click the &quot;Create&quot; button. **NOTE:** This will create stream analytics job maintenancesa02asablob.Repeat above steps to create stream the second job maintenancesa02asapbi.  |
-
-<br>
-
-For each job, we need to configure their respective input, query and output. Configure both jobs with input as same Event hub to receive the sensor data, but with different queries and outputs as shown in the table below.
-
-<br>
-
-| Add Input for (ASA) job | In the ASA blade for maintenancesa02asablob job, select &quot;Job Topology&quot; &gt; &quot;Input&quot; &gt; &quot;+Add&quot; |
-| --- | --- |
-| Set parameter values | In the form, enter these values **Import option:** Provide event hub settings manually **Service bus namespace:** &lt;name of event hub namespace e.g. aerodemo1&gt; **Event hub name:** &lt;name of the event hub e.g. aerodemo1\_EH&gt; **Event hub policy name:** RootManageSharedAccessKey **Event hub policy key:** &lt;insert the key you copied in Section-3&gt; **Event hub consumer group:** blobcgClick &quot;Create&quot; button to provision the input. **NOTE:** Repeat above steps to create input for the second job maintenancesa02asapbi, using identical parameter values, **except** for &quot;Event hub consumer group&quot; enter value as &quot;pbicg&quot;   |
-
-<br>
-
-| Add Query for (ASA) job | In the ASA blade for maintenancesa02asablob job, select &quot;Job Topology&quot; &gt; &quot;Query&quot; &gt; &quot;+Add&quot; |
-| --- | --- |
-| Configure Query | In the query editor box, insert the contents of the file named as &quot;maintenancesa02asablob&quot; in the **Stream Analytics Queries** folder in the repository you downloaded in Section-2. **NOTE:** Repeat above steps to create query for the second job maintenancesa02asapbi. |
-
-<br>
-
-| Add Output for (ASA) job maintenancesa02asablob | In maintenancesa02asablob blade, select &quot;Job Topology&quot; &gt; &quot;Output&quot; &gt; &quot;+Add&quot; |
-| --- | --- |
-| Set parameter values | In the form, enter these values **Output Alias:** RawDataBlobSink **Import option:** Provide blob storage settings manually **Storage account:** &lt;name of storage e.g. aerodemo1&gt; **Storage account key:** &lt;insert the key you copied in Section-2&gt; **Container:** maintenancesadata **Path pattern:** rawdata/date={date}/hour={time} **Date format:** YYYY-MM-DD_[This defines the format of the path strings in the storage account and is required for the HIVE scripts that will be executed as part of the larger data flow.]_ **Time format:** HH  |
-
-
-
-Next, configure three outputs, namely, &quot;Aircraftmonitor&quot;, &quot;Aircraftalert&quot;, and &quot;Flightsbyhour&quot; against the maintenancesa02asapbi ASA job.
-
-<br>
-
-| Add Output for (ASA) job maintenancesa02asapbi | In maintenancesa02asapbi blade, select &quot;Job Topology&quot; &gt; &quot;Output&quot; &gt; &quot;+Add&quot; |
-| --- | --- |
-| Set parameter values | In the form for each output, enter the values as shown below: **NOTE:** In the steps below replace &lt;value&gt; with the three output names &quot;Aircraftmonitor&quot;, &quot;Aircraftalert&quot;, and &quot;Flightsbyhour&quot;, as you repeat these steps three times.  **Output Alias:** &lt;value&gt; **Sink:** Power BI Click the _Authorize_ button to link to your Office 365 subscription.  **DataSet Name:** &lt;value&gt; **Table Name:** &lt;value&gt; Click on &#39;Create&#39; button to create the new output.  |
-
-
-
-### **Section 5: Run Application to Generate Data**
-
-In this solution, the event hub received data from a simulator that streams simulated aircraft engine data.
-
-Now that we have the event hub and stream analytics configured we can configure the data generator.
-
-| Launch application | In the repository, you downloaded in Section 2, open the &quot;Predictive Maintenance Data Generator&quot; folder Start the application &quot;Generator&quot;  |
-| --- | --- |
-| Configure application | In the Generator user interface, configure **EventHubName** : &lt;event hub name, e.g.  aerodemo1\_EH&gt; **EventHubConnectionString:** &lt;insert the key you copied in Section-3&gt; Click on &quot;Save Configuration Changes&quot; button to save the config.  |
-| Start application | Click on the green &quot;Start&quot; button to start data generation.The status button will change to green and display the text &quot; **Running&quot;** and the **&quot;Events&quot;** counter next to the button will start to increment. |
-
-**NOTE:**  Data generator can also be run in the cloud, using an Azure  [Virtual Machine](https://docs.microsoft.com/en-us/azure/virtual-machines/virtual-machines-windows-hero-tutorial).
-
-### **Section 6: Validate the Data Generation Path**
-
-The Event hub and the ASA jobs receives data generated by the data generator. So, both the Event Hub and ASA will be now checked to validate the data generation path.
-
-**Validate Event Hub**
-
-|  |
-| --- |
-|1. In the event hub namespace aerodemo1 blade, select Overview. |
-| |
-| 2. The overview dashboard will show, with a 15-minute latency, the activity in the event hub. Both the graph and the table will show the event activity in terms of incoming messages, send requests etc. |
-
-
-**Validate Stream Analytics Jobs**
-
-To validate ASA jobs, you need to first start executing each of the jobs, **maintenancesa02asablob** and **maintenancesa02asapbi.**
-
-|  |
-| --- |
-|1. In the blade of each ASA job, select Overview. From the menu at the top of the blade, click on &quot;Start&quot; to begin to execute the jobs. |
-|  |
-|2. With a 15-minute latency, both the graph and &quot;Input Event&quot; and &quot;Output Event&quot; counters in the monitoring section of the blade for each job will begin to increase. |
+The image in this section shows the overall architecture of the Cortana Intelligence Suite 
+Solution Template for predictive maintenance for aerospace that the remainder of this 
+document describes in detail. 
+![architecture](Images/PredictiveMaintenanceDiagram.JPG)
+ 
+The architecture is called out in the [blog post](https://blogs.technet.microsoft.com/machinelearning/2016/02/23/predictive-maintenance-for-aerospace-a-cortana-analytics-solution-template/) under the section **Solution Template Architecture**
+
+# Setup Steps
+
+The document walks the reader through the creation of many different Cortana Intelligence 
+Suite services with the end result of replicating the architecture defined previously. 
+As there are several services, it is suggested to group these services under a single [Azure 
+Resource Group](https://azure.microsoft.com/en-us/documentation/articles/resource-group-overview/)
+
+Similarly, we want to use a common name for the different services we are creating. The 
+remainder of this document will use the assumption that the base service name is:
+
+aerospacetemplate[UI][N]
+
+Where ***[UI]*** is the users initials and ***N*** is a random integer that you choose. Characters must be 
+entered in in lowercase. Several services, such as Azure Storage, require a unique name for the 
+storage account across a region and hence this format should provide the user with a unique 
+identifier.
+
+So for example, Steven X. Smith might use a base service name of *aerospacetemplatesxs01*. 
+
+## 1.	Create a new Azure Resource Group
+-	Navigate to ***portal.azure.com*** and log in to your account.
+-	On the left tab click ***Resource Groups***
+-	In the resource groups page that appears, click ***Add***
+-	Provide a name ***aerospacetemplate_resourcegroup***
+-	Set the location to Central US
+-	Click ***Create***
+
+## 2.	Azure Storage Account
+An ***Azure Storage*** account is used for storage of incoming aircraft sensor readings through 
+***Azure Event Hub*** and ***Azure Stream Analytics***. The storage account is also used to hold HIVE 
+scripts that will be executed from ***Azure Data Factory*** when processing the sensor data to pass 
+into the ***Azure Machine Learning*** experiment. 
+
+-	Navigate to ***portal.azure.com*** and login in to your account.
+-	On the left tab click **New>Data and Storage>Storage Account**
+-	Change the deployment model to *Classic* and click create.
+-	Set the name to aerospacetemplate[UI][N]
+-	Set the resource group to the resource group we created by selecting the link Choose Existing
+-	Location set to South Central US
+-	Click ***Create***
+-	Wait for the storage account to be created.
+
+Now that the storage account has been created we need to collect some information about it 
+for other services like ***Azure Data Factory***. 
+
+-	Navigate to ***portal.azure.com*** and login in to your account.
+-	On the left tab click ***Resource Groups***
+-	Click on the resource group we created earlier ***aerospacetemplate_resourcegroup*** 
+-	Click on the storage account in Resources
+-	In the *Settings* tab on the right click *Keys*
+-	Copy the *PRIMARY CONNECTION STRING* and add it to the table below.
+
+
+| Azure Storage     |  |
+|-------------------|----------|
+|  Storage Account  |  aerospacetemplate[UI][N]  |
+|  Connection String|    |
+
+ 
+### Prepare the storage account
+-	Download and install the [Microsoft Azure Storage Explorer](http://storageexplorer.com/)
+-	Log in to your Microsoft account associated with your Azure Subscription
+-	Locate the storage account created in step 2 above and expand the nodes to see *Blob Containers*, etc.
+-	Create the two containers, *maintenancesadata* and *maintenancesascript*
+
+      1.	Right click on ***Blob Containers*** and choose ***Create Blob Container***
+      1.	Enter one of the container names.
+      1.	Repeat a and b until both containers are created.
+
+-	Right click the *maintenancesascript* container and choose ***Open Blob Container Editor***
+-	In the right panel, above the container listing, click the arrow on the ***Upload*** button and choose ***Upload Folder***
+-	Browse to the ***Storage Files\script*** folder in the ZIP content. This will upload the required HIVE queries that will be used in data processing.
+
+## 3.	Azure Event Hub
+Azure Event Hubs is a highly scalable service that can ingest millions of records a second. This will be the ingestion point for the aircraft sensor data.
+-	Navigate to ***portal.azure.com*** and login in to your account.
+-	On the left tab click ***Resource Groups***
+-	Click on the resource group we created earlier ***aerospacetemplate_resourcegroup*** 
+-	On the resource page click ***Add***
+-	On the page that appears on the right, type Event Hub in the search box. 
+-	Choose ***Event Hub***
+-	Click ***Create*** on the page that comes up which will re-direct you to ***manage.windowsazure.com***.
+-	On the redirected page Choose ***Custom Create***
+-	Enter the name aerospacetemplate[UI][N]
+-	Set region to Central US
+-	In the ***NAMESPACE*** drop-down menu choose ***Create new namespace***
+-	The namespace will be created as aerospacetemplate[UI][N]-ns.
+-	Click the next arrow, and enter *Partition Count* as 4 and *Retention Days* as 7
+-	Click the check button to complete the creation
+
+This creates the Azure Event Hub we need to receive aircraft sensor readings. The Event Hub will 
+be consumed by two Azure Stream Analytics jobs. To ensure processing of the hub is successful 
+we need to create [consumer groups](https://azure.microsoft.com/en-us/documentation/articles/event-hubs-programming-guide/#event-consumers) on the hub.
+
+-	Log into ***manage.windowsazure.com***
+-	In the left panel, click ***SERVICE BUS***
+-	In the list, choose the namespace we created above - aerospacetemplate[UI][N]-ns
+-	Click ***EVENT HUBS*** at the top of the right pane
+-	The event hub we have created above (aerospacetemplate[UI][N]) should be highlighted. 
+-	Click the ***CREATE CONSUMER GROUP*** at the bottom of the right pane and add  *blobcg* into the Consumer Group Name.
+Repeat this but this time add *pbicg* into the Consumer Group Name.
+
+Finally, we are going to need some information about this event hub for our event generation 
+application that will feed the event hub. While still at ***manage.windowsazure.com*** 
+
+-	Click ***SERVICE BUS*** in the left panel
+-	Highlight the namespace we created above - aerospacetemplate[UI][N]-ns by clicking on the row but not the actual namespace name.
+-	At the bottom of the page click ***CONNECTION INFORMATION***
+-	Copy the *CONNECTION STRING* information and paste it into the table below.
+
+The connection string and event hub name information will be needed to configure the desktop 
+data generation tool that simulates aircraft sensor readings being sent to the event hub.
+
+| Azure Event Hub     |  |
+|-------------------|----------|
+|  Event Hub  |  aerospacetemplate[UI][N]  |
+|  Namespace |  aerospacetemplate[UI][N]-ns  |
+|  Connection String |    |
+
+### Check Event Hub
+While running the demo you can validate the event hub created is receiving messages by 
+following the steps below. This can be a useful debugging step to determine if the event hub is 
+functioning as expected, but note that the event hub will only show activity when the data 
+generation tool is executing:
+-	Log in to ***manage.windowsazure.com***
+-	In the menu on the left side of the screen select ***SERVICE BUS***
+-	Choose the service bus created above
+-	Click on *EVENT HUBS* at the top of the right hand side of the page
+-	Choose the event hub created above
+-	The dashboard will show, with a 15 minute latency, the activity in the event hub. You can also gain more information on the event hub by selecting ***Operation Logs*** on the dashboard page under *Management Services*.
+
+## 4.	Azure Stream Analytics Jobs
+[Azure Stream Analytics](https://azure.microsoft.com/en-us/services/stream-analytics/) allows you to create near real-time insights from devices, sensors, infrastructure and applications. For this demo Azure Stream Analytics is used to create two jobs that read sensor data from the *Azure Event Hub*.
+ 
+The first job simply pipes all of the sensor readings into our *Azure Storage* for later processing. The second job is used to populate Power BI datasets that will be used on the dashboard. Although we have not set up *Power BI* yet, we will create both stream jobs now.
+
+The names of the two jobs are ***maintenancesa02asablob*** and ***maintenancesa02asapbi***. For each of these two job names follow the next steps.
+
+-	Navigate to ***portal.azure.com and login*** in to your account.
+-	On the left tab click ***Resource Groups***
+-	Click on the resource group we created earlier ***aerospacetemplate_resourcegroup*** 
+-	On the resource page click ***Add***
+-	On the page that appears on the right, type *Stream Analytics Job* in the search box. 
+-	From the search results choose *Stream Analytics Job*
+-	On the page that appears on the right click ***Create***
+-	Enter a job name 
+-	Choose the resource group created earlier ***aerospacetemplate_resourcegroup***
+-	Choose the location as Central US
+-	Click ***Create***
+
+Once both jobs have been created, they can be configured. Both jobs will have the same input Event Hub, but will have different [stream queries](https://msdn.microsoft.com/en-us/library/azure/dn834998.aspx) and different outputs. 
+
+Some of the configuration functionality for the stream analytics jobs cannot be completed at ***portal.azure.com*** so the remaining configuration steps will be on the ***manage.windowsazure.com*** site.
+
+First we will create the inputs on the jobs. For each of the stream jobs we created at ***portal.azure.com***:
+
+-	Navigate to ***manage.windowsazure.com*** and login in to your account (if it is already open you may need to refresh to see the streams you set up earlier).
+-	On the left tab click ***STREAM ANALYTICS***
+-	Click on the one of the jobs that was created in the earlier steps.
+-	At the top of the right page, click ***INPUTS***
+-	Click on ***ADD AN INPUT***
+-	Through the set up wizard
+    -	Page 1 : Choose Data Stream
+	-	Page 2: Choose Event Hub
+	-	Page 3:
+		-	Input Alias: EventHubSource
+		-	Choose the event hub we created earlier and the correct namespace.
+		-	Consumer Group
+			- maintenancesa02asablob uses *blobcg*
+			- maintenancesa02asapbi uses *pbicg*
+	-	Page 4: *EVENT SERIALIZATION FORMAT*: CSV
+	-	Click the check box to complete the creation of the input.
+
+Now we will create the queries for the jobs:
+
+-	Navigate to ***manage.windowsazure.com*** and login in to your account.
+-	On the left tab click ***STREAM ANALYTICS***
+-	Click on the one of the jobs that was created in the earlier steps.
+-	At the top of the right page click ***QUERY*** 
+-	In the query box, copy the content of one of the scripts from the package folder ***Stream Analytics Queries***. The query files are named identically to the job name.
+-	Click ***Save*** at the bottom of the page
+-	Repeat for the other job.
+
+Finally we will create the output for the jobs. The steps to creating the output is identical but the output information will be different. 
+
+-	Navigate to ***manage.windowsazure.com*** and login in to your account.
+-	On the left tab click ***STREAM ANALYTICS***
+-	Click on the one of the jobs that was created in the earlier steps.
+-	At the top of the right page, click ***OUTPUTS***
+-	Click ***ADD AN OUTPUT***
+
+
+### maintenancesa02asablob Output
+-	Page 1: Choose *Blob Storage*
+-	Page 2:
+	-	OUTPUT ALIAS: RawDataBlobSink
+	-	Choose the storage account created earlier
+	-	Choose the storage container ***maintenancesadata*** that was created earlier.
+	-	PATH PREFIX PATTERN: rawdata/date={date}/hour={time}
+	-	Setting the prefix pattern enables the ***DATE FORMAT*** combo box. Change the format from YYYY/MM/DD to YYYY-MM-DD. This defines the format of the path 
+strings in the storage account and is required for the HIVE scripts that will be executed as part of the larger data flow.
+-	Page 3: EVENT SERIALIZATION FORMAT is CSV
+-	Click the check button at the bottom of the wizard to add the output to the job.
+-	At the bottom of the page click ***START*** to get the stream job started.
+
+### maintenancesa02asapbi Output
+There are 3 Power BI outputs that need to be created. Each are identified in the query and they are ***Aircraftmonitor***, ***Aircraftalert***, and ***Flightsbyhour***. For each of these data sets you will add an output:
+
+-	Page 1: Choose *Power BI PREVIEW*
+-	Page 2: Click the *Authorize Now* button to link to your Office 365 subscription.
+-	Page 3: For *OUTPUT ALIAS*, *DATASET NAME*, and *TABLE NAME* use one of the outputs identified in the query for all three fields, for example Aircraftmonitor
+-	Click the check button at the bottom of the page to accept the new output.
+
+### Check Stream Jobs
+While running the demo you can validate the stream jobs are operating as expected by 
+following the steps below. Please note that the event hub will only show activity when the data 
+generation tool is executing:
+
+-	Log in to ***manage.windowsazure.com***
+-	In the menu on the left side of the screen select ***STREAM ANALYTICS***
+-	Choose one of the stream jobs created above
+-	Click on *DASHBOARD* at the top of the right hand side of the page
+-	The dashboard will show, with a 15 minute latency, the activity in the event hub. You can 
+also gain more information on the event hub by selecting ***Operation Logs*** on the dashboard page under Management Services.
+
+## 5.	Configure desktop application and test Event Hub / Stream Analytics
+Now that we have the event hub and stream analytics configured we can configure the event generator and test that the flow to this point is working. 
+
+-	Navigate to the hard disk location where the project was unzipped.
+-	Go into the ***Predictive Maintenance Data Generator*** directory and start the *Generator.exe* application.
+-	In the left side of the application enter the event hub name and the event hub connection string that was collected earlier.
+-	Click the ***Save Configuration Changes*** button.
+-	Click the green ***Start*** button.
+-	The status area will change to green with the text *Running*
+-	In the Events section at the top of the right hand side of the application you will see the count start to increment.
+
+### Validating initial data generation
+Leaving the generator running for about 15 minutes, we can validate that the services thus far are operating as expected. 
+
+First validate event hub by following the steps in [help](#internaldoc) Check Event Hub. 
+
+Next, validate that the stream analytics job related to storage is working by following the steps in [help](#internaldoc)Check Stream Jobs for the [help](#internaldoc) maintenancesa02asablob Output job. 
 
 Finally, validate that the files are being created in the storage account by following these steps:
 
-|  |
-| --- |
-|**1.** Open the Microsoft Azure Storage Explorer desktop app |
-|  |
-| **2.** Navigate to the storage account set up previously (aerodemo1)|
-| **3.** Open the blob container &quot;maintenancesadata&quot; |
-| **4.** Note that a sub folder _rawdata_ has been created by the stream analytics job. |
+-	Open the Microsoft Azure Storage Explorer
+-	Navigate to the storage account set up previously
+-	Open the blob container maintenancesadata
+-	Note that a sub folder *rawdata* has been created by the stream analytics job.
 
-<br>
+You may close the data generator as it is not required for the following steps. It will be needed later when the whole system is brought online after the remaining services have been configured.
 
-### **Section 7: Deploy Azure SQL Server and Database**
+## 6.	Azure SQL Server and Database
+Now that we have completed the ingestion path, we can start building the data processing paths. We will use ***Azure Data Factory*** to process the data. To do so we need to set up a couple more services. First is an ***Azure SQL Database*** to hold remaining useful life predictions that are the result of running the ***Azure Machine Learning*** experiment. 
 
-<br>
+-	Navigate to ***portal.azure.com*** and login in to your account.
+-	On the left tab click ***New>Data and Storage>SQL Database***
+-	Enter the name ***pmaintenancedb*** for the database name
+-	Under Server click the arrow and choose ***Create new server***
+	-	Name : aerospacetemplate[UI][N]
+	-	Enter in an administrator account name and password and save it to the table below.
+	-	Under ***Create V12 server (latest update)*** choose no, then choose Central US as the location to keep the resource in the same region as the rest of the services.
+	-	Click OK
+-	Once returned to the SQL Database tab, choose the resource group previously created ***aerospacetemplate_resourcegroup***
+-	Click ***Create***
+-	Wait for the database and server to be created.
+-	From ***portal.azure.com*** click on ***Resource Groups***  then the group for this demo ***aerospacetemplate_resourcegroup***.
+-	In the list of resources, click on the SQL Server that was just created.
+-	Under ***Settings*** for the new database, click ***Firewall*** and create a rule called ***open*** with the IP range of 0.0.0.0 to 255.255.255.255. This will allow you to access the database from your desktop*. Click ***Save***. 
+-	Launch ***SQL Server Management Studio***, or a similar tool, and connect to the database with the information you recorded in the table below.
+	-	NOTE: The server name in most tools will require the full name:                             
+aerospacetemplate[UI][N].database.windows.net,1433
+	-	NOTE: Choose SQL Server Authentication
+-	**THESE INSTRUCTIONS ARE FOR SSMS**
+	-	Click on the ***pmaintenancedb*** that you created on the server.
+	-	Click ***New Query*** at the tool bar.
+	-	Copy and execute the SQL script located in the package directory ***Storage Files\script\SQL*** to create the necessary table for the machine learning 
+experiment and a stored procedure that will be used by ***Azure Data Factory***
 
-So far we have configured and validated the ingestion path. Next we can start building the data processing paths. In the solution Azure Data Factory is used to process the data, which requires a couple more services, namely, Azure SQL Database and Azure Machine Learning.
+**NOTE:** This firewall rule is not recommended for production level systems but for this demo is 
+acceptable. You will want to set this rule to the IP range of your secure system.
 
-In this step, we will configure an Azure SQL Database to hold the remaining useful life (RUL) predictions which results from running the Azure Machine Learning experiment.
-
-<br>
-
-
-| Add Azure SQL Database | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Databases&quot; &gt; &quot;SQL Database&quot; &gt; &quot;Create&quot;. |
-| --- | --- |
-| Set parameter values | In the form, enter these values <br>**Database Name:** pmaintenancedb <br>**Subscription:** &lt;your Azure subscription name&gt; <br>**Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 <br>**Select Source:** Blank DatabaseServer: Choose &quot;<br>Create new server&quot;. In the new server form configure: <br>**Server name:** aerodemo1 <br>**Server admin login:** &lt;enter username&gt; <br>**Password:** &lt;enter password&gt; <br>**Confirm password:** &lt;re-enter password&gt;  <br>**NOTE:** Write down the server-name, username and password as you will need to refer these later.  **Location:** Central US For all other parameters, it is okay to use the default values. |
-| Provision Database | Click on &quot;Create&quot; to provision the new database. Wait till this step completes. |
-| Set firewall to enable access from desktop | In the newly created database pmaintenancedb blade, select Overview &gt; &quot;Set Server Firewall&quot; (from top menu). Create a firewall name using following valuesRule name: OpenStart IP: 0.0.0.0End IP: 255.255.255.255 <br> **NOTE:** This firewall rule is not recommended systems in production, where you want to set this rule to the IP range of your secure system. However, for this demo it is acceptable.  |
-| Get database connection string | In pmaintenancedb blade, &quot;Overview&quot; &gt; &quot;Show database connection strings&quot;. Copy the ADO.NET (SQL authentication) string and store in the table below |
-
-**NOTE:** To execute further steps, you need to install SQL Server Management Studio (SSMS) or a similar tool.
-
-| Connect to the SQL database from your desktop | Launch SSMS (or a similar tool) in your desktop, in the dialogue box enter **Server name** : aerodemo1. database.windows.net,1433 (most tools require the full name) **Authentication:** SQL Server Authentication  |
-| --- | --- |
-| Create tables for ML experiment and Azure Data factory |**1.** Click on pmaintenancedb SQL Database <br>**2.** Click &quot;New Query&quot; in the tool bar. <br>**3.** From the repository that you downloaded in section-2, copy the file in Storage Files\script\SQL and Execute it here. This step will create the necessary table for the machine learning experiment and a stored procedure that will be used by Azure Data Factory.  |
+| Azure SQL Database     |  |
+|-------------------|----------|
+|  Server Name  |  aerospacetemplate[UI][N]  |
+|  Database|  pmaintenancedb  |
+|  User Name |    |
+|  Password |    |
 
 
-<br>
+## 7.	Create Azure Studio ML Workspace and Experiment
 
-**Table 3: Azure SQL Database Information**
+https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf 
 
-| Server Name |   |
-| --- | --- |
-| Database |   |
-| User Name |   |
-| Password |   |
-| Connection String |   | |
-<br>
-<br>
-<br>
-
-### **Section 8: Deploy Azure Studio ML Workspace and Experiment**
+This section assumes that you have not set up any workspaces for Studio ML but that you do have an account at ***studio.azureml.net***.
 
 The first thing we need to do is to create the workspace. A workspace is where experiments are created. It is also tied to a storage account for intermediate results during experiment processing.
-<br>
-<br>
-<br>
+
+-	Navigate to ***manage.windowsazure.com*** and login in to your account.
+-	On the left tab click ***MACHINE LEARNING***
+-	In the bottom left hand corner click ***NEW***
+-	Choose *DATA SERVICES\MACHINE LEARNING\QUICK CREATE*
+-	For workspace name enter *aerospacetemplate[UI][N]*
+-	Location South Central US
+-	Choose the storage account created earlier
+-	Click on ***Create an ML Workspace***
+
+Now that we have a workspace to work within, we can copy over the required experiment from the Gallery.
+
+-	Navigate to ***studio.azureml.net*** and log into your account
+-	Navigate to the experiment [https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf ](https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf ) 
+-	Click the ***Open in Studio button***. 
+-	In the dialog Copy experiment from Gallery, choose appropriate South Central US and the workspace we created earlier that you would like to copy it into. Click the ***?*** button.
+-	This process may take a minute, but the experiment will open in the requested workspace.
+-	Click ***RUN*** at the bottom of the page. This step will take several minutes to finish and all objects in the graph will have a check box on them to indicate they have run.
+-	Click ***DEPLOY WEB SERVICE*** at the bottom of the page to create the Azure Web Service associated with the experiment. When completed the browser will redirect to the web service home page.
+	-	The web service home page can also be found clicking the ***WEB SERVICES*** button on the left menu of the ***studio.azureml.net*** page once logged in. 
+-	Copy the ***API key*** from the web service home page and add it to the table below as you will need this information later. 
+-	Click the link ***BATCH EXECUTION*** under the ***API HELP PAGE*** section. On the BATCH EXECUTION help page, copy the Request URI under the Request section and add it to the table below as you will need this information later. Copy only the URI part https:.../jobs ignoring the URI parameters starting with ? .
 
 
-| Add Azure ML Workspace | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Data + Analytics&quot; &gt; &quot;Machine Learning Workspace&quot; &gt; Create |
-| --- | --- |
-| Set parameter values | In the form, enter these values **Workspace Name:** aerodemo1 **Subscription:** &lt;your Azure subscription name&gt; **Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Location:** Central US **Storage Account:** Choose &quot;Use Existing&quot;; specify aerodemo1 **Pricing tier:** Standard **Web service plan:** Choose &quot;Create New&quot;, enter service plan name For all other parameters, it is okay to use the default values.  |
-| Copy over the required experiment from the Gallery | **1.** Click [here](https://gallery.cortanaintelligence.com/Experiment/bcae226bc74a4cbbb0ff700ac97448bf) to navigate to the experiment. <br>**2.** Click the &quot;Open in Studio&quot; button.<br> **3.** After ML studio launches, in the dialog box &quot;Copy experiment from Gallery&quot;, select:<br> - ** ML Workspace:** aerodemo1 <br> - ** Location:** Central US <br> The experiment will now be copied over to aerodemo1 workspace. <br> **NOTE:** This process may take a few minutes. Once copied the experiment will open in the requested workspace. If prompted for upgrade, select OK.  |
-| Run ML Experiment | Click &quot;RUN&quot; at the bottom of the page. NOTE: This step will take several minutes to finish and all objects in the graph will have a check box on them to indicate they have run.  |
-| Create the Azure Web Service | **1.** Click &quot;DEPLOY WEB SERVICE&quot; at the bottom of the page to create the Azure Web Service associated with the experiment. When completed the browser will redirect to the web service home page. <br> **2.** Copy the &quot;API key&quot; from the web service home page and record it in table 4 below as you will need this information later. <br> **3.** Click the link **BATCH EXECUTION** under the **API HELP PAGE** section. On the BATCH EXECUTION help page, copy the Request URI under the Request section and record it in table 4 below as you will need this information later.
-
-<br>
-
-**NOTE:** 1. Copy only the URI part &quot;https:…/jobs&quot; ignoring the URI parameters starting with &quot;?&quot;.<br>2. The web service home page can also be found clicking the **WEB SERVICES** button on the left menu of the **studio.azureml.net** page once logged in.
+| Web Service BES Details  |  |
+|-------------------|----------|
+|  API Key  |    |
+|  Request URI*|  https:.../jobs  |
 
 
+## 8.	Azure Data Factory
+We have now created the necessary components to put the data pipeline together using ***Azure Data Factory***. Data factories are orchestration services that move and process data in a dependency flow pipeline.
 
-**Table 4: Azure Web Service Parameters**
+The data factory we will use for this project will make use of an on demand ***HDInsights*** cluster to read from the raw data being streamed in through the event hub and stream analytics jobs. 
 
+*HIVE* scripts are run against the raw data using the cluster to create the required aggregates and engineered features for the machine learning experiment and another *HIVE* script is executed to feed the machine learning experiments batch execution endpoint. 
 
-| API KEY | <br> |
-| --- | --- |
-| REQUEST URI | <br>  |
+The results of the experiment are put in another blob which is then copied to the ***Azure SQL Database***.
+ 
+Based on the data, and the flow of data, this data factory will be scheduled to run every 3 hours. This means once the entire flow is configured and enabled results will not be present until approximately 3.5 hours later.
 
-<br>
+Now it is time to create the data factory:
 
-### **Section 9: Deploy Azure Data Factory**
-<br>
+-	Navigate to ***portal.azure.com*** and login in to your account.
+-	On the left tab click ***New>Data and Analytics>Data Factory***
+-	Name: *aerospacetemplate[UI][N]*
+-	Resource Group: Choose the resource group created previously ***aerospacetemplate_resourcegroup***
+-	Location: Central US
+-	Click ***Create***
 
-We have now created the necessary components to put the data pipeline together using Azure Data Factory. Data factories are orchestration services that move and process data in a dependency flow pipeline.
+The data factory will take some time to create. The portal page will direct you to the factory when it has been created, or you can access it through the *Resource groups* section. 
 
-The data factory in this solution uses an on-demand **HDInsight** cluster.  HIVE scripts run on this cluster to process raw data streamed from the event hub and ASA, to create the required aggregates and engineered features for the machine learning experiment.
+Data factories are made up of several components. Linked services define the information for the data factory to connect to other services. Datasets are named references used for input or output from an activity. Pipelines contain one or more activities to be executed. 
 
-Another _HIVE_ script is executed to feed the machine learning experiment&#39;s batch execution endpoint.
+The next steps for the factory are to create the different parts of the factory. The following sections walk you through the steps.
 
-The results of the experiment are put in another blob which is then copied to the Azure SQL Database.
+### Linked Services
+For this solution we are going to need 5 linked services. For these services you will need to navigate to the package location ***Data Factory\LinkedServices*** to access the scripts. 
 
-Based on the data, and the flow of data, this data factory will be scheduled to run every 3 hours. This means once the entire flow is configured and enabled, results will not be present until approximately 3.5 hours later.
-<br>
-<br>
+We will create two types of linked service Store and Compute. 
 
-| Add Azure Data Factory | In Azure Portal, click on &quot;+ New&quot; &gt; &quot;Data + Analytics&quot; &gt; &quot;Data Factory&quot;.  |
-| --- | --- |
-| Set parameter values | In the form, enter these values <br>**Name:** aerodemo1 <br>**Subscription:** &lt;your Azure subscription name&gt; <br>**Resource group:** Choose &quot;Use Existing&quot;; specify aerodemo1 <br>**Location:** Central US   |
-| Provision | Click &quot;Create&quot;. Wait till the data factory is deployed, it may take several minutes.  |
+-	For the two scripts *StorageLinkedService_Store.txt* and *HDInsightStorageLinkedService_Store.txt* copy the storage account connection string from the Azure Storage Account section and add it to the scripts.
+-	On ***portal.azure.com*** navigate to your data factory, which is a resource in the created resource group, and click the ***Author and Deploy*** button.
+-	For each of the two modified files:
+	-	At the top of the tab, click New data store/Azure storage
+	-	Overwrite the content in the editor window with the file content
+	-	Click Deploy
+-	Open the file *AzureSqlLinkedService_Store.txt* and adjust the information in the connection string to match that of the server you created in Azure SQL Server and Database section.
+-	At the top of the tab, click ***New data store/Azure SQL***
+-	Overwrite the content in the editor window with the file content.
+-	Click ***Deploy***
 
-Next, we will configure the various data factory components which will be used in this solution.
+Now we have the three data store linked service created, we need to create two compute services. One for the machine learning call and one for an on demand HDInsights cluster used in the processing.
 
-**Linked services** define the information for the data factory needed to connect to other services.
+-	Open the *AzuremlBatchEndpointBatchLocation_Compute.txt* and modify the mlEndponit and API key from using the information from the experiment created in Create Azure Studio ML Workspace and Experiment section.
+-	On ***portal.azure.com*** navigate to your data factory and click the ***Author and Deploy*** button.
+-	At the top of the tab, click ***New compute/Azure ML***
+-	Copy the contents of the edited *AzuremlBatchEndpointBatchLocation_Compute.txt* into the editor.
+-	Click ***Deploy***
+-	At the top of the tab, click ***New compute/On Demand HDInsight*** cluster
+-	Copy the content of *HDInsightLinkedService_Compute.txt* into the editor window. 
+-	Click ***Deploy***
 
-**Datasets** are named references used for input or output from an activity.
+The linked services are now complete, we will now move on to creating the data sets.
 
-**Pipelines** contain one or more activities to be executed.
-
-#### **Deploy Linked Services**
-<br>
-In this solution, we will deploy 5 linked services using scripts already included in the repository you downloaded in section 2.
-
-We will create two types of linked service Store and Compute.
-
-| Edit scripts for Azure Storage linked services | Replace the Connection String value in the two files &quot;StorageLinkedService\_Store.txt&quot; and &quot;HDInsightStorageLinkedService\_Store.txt&quot; with the connection string of the storage account aerodemo1 (created in Section 2). |
-| --- | --- |
-| Deploy Azure Store linked services | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New data store&quot; &gt; &quot;Azure storage&quot; will open a draft file. In the editor overwrite the content of the file with that of StorageLinkedService\_Store.txt. Click &quot;Deploy&quot;, wait for deployment to complete.Repeat above step for HDInsightStorageLinkedService\_Store.txt  |
-| Edit scripts for Azure SQL linked services | Replace the Connection String value in the file AzureSqlLinkedService\_Store.txt.with the connection string of the SQL database pmaintenancedb (refer table in Section 6). |
-| Deploy Azure SQL linked services | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New data store&quot; &gt; &quot;Azure SQL&quot; will open a draft file. In the editor overwrite the content of the file with that of AzureSqlLinkedService\_Store.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
-| Edit scripts for Azure Compute linked services for machine learning call | Replace the values in mlEndpoint and APLI key in the file AzuremlBatchEndpointBatchLocation\_Compute.txtwith Request URI and API Key values from the ML experiment (refer table in Section 7). |
-| Deploy Azure Compute linked services for machine learning call | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New Compute&quot; &gt; &quot;Azure ML&quot; will open a draft file. In the file editor overwrite the content of the file with that of AzuremlBatchEndpointBatchLocation\_Compute.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
-| Deploy Azure Compute linked services for on-demand HDInsight cluster | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New Compute&quot; &gt; &quot;HDInsight Cluster&quot; will open a draft file. In the file editor overwrite the content of the file with that of HDInsightLinkedService\_Compute.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
-
-
-
-The linked services are now complete; we will now move on to creating the data sets.
-
-**TIP:** HDInsight clusters request a certain number of resources from your subscription. It is possible that your subscription may be out of resources, or enough resources (cores) required for this data factory. If you have reached the limit for the region chosen for this deployment you can use the following steps to help resolve this:
-<br> - Create a new resource group in another region
-<br> - Follow the steps above to create the Azure Data Factory in that region.
-
-
-#### **Deploy Datasets**
-
-<br>
-
-
-For this solution, we are going to need 6 data sets that are of type Azure Storage blob and Azure SQL tables.
-
-<br>
+| NOTE|
+|-------------------|
+	  HDInsights clusters request a certain number of resources from your subscription. 
+	  It is possible that your subscription may be out of resources, or enough resources 
+	  (cores) required for this data factory. If you have reached the limit for the region 
+	  chosen for this deploymnet you can use the following steps to help resolve this:
+	  
+	- Create a new resource group in another region
+	- Follow the steps above to create the Azure Data Factory in that region.	 
 
 
-|  |  |
-| --- | --- |
-|Deploy Data Sets | In Azure data factory aerodemo1 blade, click on &quot;Author and Deploy&quot;.At the top of the tab, click &quot;New dataset/Azure blob storage&quot; EXCEPT for the content of SQLScoredResultTable.txt which you will choose &quot;New dataset/Azure SQL&quot;Copy the contents of the file into the editor. Click Deploy  |
+### Datasets
+For this solution we are going to need 6 data sets that are of type Azure Storage blob and Azure SQL tables. Navigate to the package location ***Data Factory\Datasets*** to access the scripts. 
+
+These scripts do not need to be modified in any way, simply copied in to the editor window, so for each file:
+
+-	On ***portal.azure.com navigate*** to your data factory and click the ***Author and Deploy*** button.
+-	At the top of the tab, click ***New dataset/Azure blob storage*** EXCEPT for the content of SQLScoredResultTable.txt which you will choose ***New dataset/Azure SQL***
+-	Copy the contents of the file into the editor.
+-	Click ***Deploy***
 
 
-#### **Deploy Pipelines**
-<br>
-For this solution, we are going to need 3 pipelines to process our raw data from stream analytics, send the aggregated values to the machine learning experiment, and then finally move those results to our SQL database.
+| NOTE|
+|-------------------|
+|  Datasets define the execution window of a pipeline. In the pipeline scripts under the availability section you will see that frequency is set to hour and interval is set to 3. This means these data sets are available every 3 hours in the pipeline activity period so the pipeline will run every third hour.  | 
 
+### Pipelines
 
+For this solution we are going to need 3 pipelines to process our raw data from stream analytics, send the aggregated values to the machine learning experiment, and then finally move those results to our SQL database. Navigate to the package location ***Data Factory\Pipelines*** to access the scripts.
 
-There are two modifications that the files require.
+There are just a few modifications that these scripts will require. 
 
-1. In the MLScoringPipeline and AggregateFlightInfoPipeline files locate the text near the top of the file and replace &lt;accountname&gt; with aerodemo1 (the name of the storage account created in Section 2).
-2. Edit the activity periods for the 3 pipelines. An activity period describes the dates and times that the pipeline should be executed. For a detailed discussion on activity periods click [here](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-pipelines/).
+First, in the *MLScoringPipeline* and *AggregateFlightInfoPipeline* files locate the text ***<accountname>*** near the top of the file and replace it with the name of the storage account created earlier in Azure Storage Account section.
+ 
+The remaining modifications have to do with activity periods for the pipelines. An activity period describes the dates and times that the pipeline should be executed. For a detailed discussion on activity periods click [here](https://azure.microsoft.com/en-us/documentation/articles/data-factory-create-pipelines/).
 
 At the bottom of each of the three pipeline scripts there is a section that contains the following settings:
 
-    "start": ""[Start Activity Period UTC]"",
-
-    "end": ""[End Activity Period UTC]"",
+        "start": "[Start Activity Period UTC]",
+        "end": "[End Activity Period UTC]", 
 
 These fields identify when the pipeline should be active and are in UTC time. So, if you are in EST and you want to set this active from March 11th from 12:00 PM EST to 5:00 PM EST you would modify these as follows:
 
-    "start": "2016-03-11T12:00:00Z",
-
-    "end": "2016-03-11T17:00:00Z",
+        "start": "2016-03-11T12:00:00Z",
+        "end": "2016-03-11T17:00:00Z", 
 
 When the pipelines are active you will incur some expense.
 
+For each of the scripts
+-	On ***portal.azure.com*** navigate to your data factory and click the ***Author and Deploy*** button.
+-	At the top of the tab, click ***More commands*** and then ***New pipeline***
+-	Copy the contents of the file into the editor.
+-	Click ***Deploy***
+
+Now the data factory is in place. You can see the layout of the factory by navigating to your data factory and clicking ***Diagram***.
+
+ 
+
+### Check Data Factory
+While running the demo you can validate that the data factory is operating as expected by following the steps below:
+
+-	Log in to ***portal.azure.com***
+-	In the menu on the left side of the screen select ***Resource groups***
+-	Choose the previously created resource group ***aerospacetemplate_resourcegroup***.
+-	Click on the data factory that was created earlier. 
+-	Click on the ***Monitor & Manage*** button and validate your credentials again if prompted.
+-	If there are errors being reported, navigate back to portal.azure.com to the data factory and click on the datasets to determine where in the pipeline issues have been detected. 
 
 
-| Deploy Pipelines | In Azure data factory aerodemo1 blade, click on &quot;Author and Deploy&quot;.At the top of the tab, click &quot;More commands&quot; &gt; &quot;New pipeline&quot;Copy the contents of the file into the editor.Click Deploy  |
-| --- | --- |
+##  9.	Setting Up Power BI
+### Overview
+This section describes how to set up Power BI dashboard to visualize
+your real time data from Azure Stream Analytics (hot path), as well as
+batch prediction results from Azure machine learning (cold path).
 
-#### **Check Data Factory**
-<br>
-From the data factory blade,
+### Setup cold path dashboard
+In the cold path data pipeline, the essential goal is to get the
+predictive RUL (remaining useful life) of each aircraft engine once it
+finishes a flight (cycle). The prediction result is updated every 3
+hours for predicting the aircraft engines that have finished a flight
+during the past 3 hours.
 
-1. To see the layout of the factory, click &quot;Diagram&quot; **.**
-2. Click on the &quot;Monitor &amp; Manage&quot; button and validate your credentials again if prompted. If there are errors being reported, navigate back to portal.azure.com to the data factory and click on the datasets to determine where in the pipeline issues have been detected.
+Power BI connects to an Azure SQL database as its data source, where the
+prediction results are stored. Note: 1) Upon deploying your
+solution, a real prediction will show up in the database within 3 hours.
+The pbix file that came with the Generator download contains some seed
+data so that you may create the Power BI dashboard right away. 2) In
+this step, the prerequisite is to download and install the free software
+[Power BI
+desktop](https://powerbi.microsoft.com/documentation/powerbi-desktop-get-the-desktop/).
 
-### **Section 10: Configure Power BI for Visualization**
-<br>
-This section describes how to set up Power BI dashboard to visualize your real-time data from Azure Stream Analytics (hot path), as well as batch prediction results from Azure machine learning (cold path).
+The following steps will guide you on how to connect the pbix file to
+the SQL Database that was spun up at the time of solution deployment
+containing data (*e.g.*. prediction results) for visualization.
 
-# Pre-requisites:
+1. Get the database credentials.
+   
+   You'll need **database server name, database name, user name and
+   password** before moving to next steps. Here are the steps to guide
+   you how to find them.
+   
+   * Once **'Azure SQL Database'** on your solution template diagram turns green, click it and then click **'Open'**.
+   * You'll see a new browser tab/window which displays the Azure
+     portal page. Click **'Resource groups'** on the left panel.
+   * Select the subscription you're using for deploying the solution, and
+     then select **'YourSolutionName\_ResourceGroup'**.
+   * In the new pop out panel, click the  ![SQL icon](Images/icon-sql.png) icon to access your
+     database. Your database name is next to the this icon (*e.g.*, **'pmaintenancedb'**), and  the **database server name** is listed under the Server name property and should look similar to **YourSoutionName.database.windows.net**.
+   * Your database **username** and **password** are the same as
+     the username and password previously recorded during deployment of the solution.
+2. Update the data source of the cold path report file with Power
+   BI Desktop.
+   
+   * In the folder on your PC where you downloaded and unzipped the
+     Generator file, double-click the
+     **PowerBI\\PredictiveMaintenanceAerospace.pbix** file. If you see any warning messages when you open the file, ignore them. On the top of the file, click **'Edit Queries'**.
+     
+     ![Edit Queries](Images/edit-queries.png)
+   * You'll see two tables, **RemainingUsefulLife** and **PMResult**. Select the first table and click ![Query settings icon](Images/icon-query-settings.png) next to **'Source'** under
+     **'APPLIED STEPS'** on the right **'Query Settings'** panel. Ignore
+     any warning messages that appear.
+   * In the pop out window, replace **'Server'** and **'Database'** with
+     your own server and database names, and then click **'OK'**. For server
+     name, make sure you specify the port 1433
+     (**YourSoutionName.database.windows.net, 1433**). Leave the Database field as **pmaintenancedb**. Ignore the warning
+     messages that appear on the screen.
+   * In the next pop out window, you'll see two options on the left pane
+     (**Windows** and **Database**). Click **'Database'**, fill in your
+     **'Username'** and **'Password'** (this is the username and password
+     you entered when you first deployed the solution and created an
+     Azure SQL database). In ***Select which level to apply these
+     settings to***, check database level option. Then click
+     **'Connect'**.
+   * Click on the second table **PMResult** then click ![Navigation icon](Images/icon-navigation.png)
+     next to **'Source'** under
+     **'APPLIED STEPS'** on the right **'Query Settings'** panel, and update
+     the server and database names as in the above steps and click OK.
+   * Once you're guided back to the previous page, close the window. A message will pop out - click **Apply**. Lastly, click the **Save** button to save
+     the changes. Your Power BI file has now established connection to the server. If your visualizations are empty, make sure you clear the selections on the visualizations to visualize all the data by clicking the eraser icon on the upper right corner of the legends. Use the refresh button to reflect new data on the visualizations. Initially, you will only see the seed data on your visualizations as the data factory is scheduled to refresh every 3 hours. After 3 hours, you will see new predictions reflected in your visualizations when you refresh the data.
+3. (Optional) Publish the cold path dashboard to [Power BI
+   online](http://www.powerbi.com/). Note that this step needs a Power
+   BI account (or Office 365 account).
+   
+   * Click **'Publish'** and few seconds later a window appears
+     displaying "Publishing to Power BI Success!" with a green
+     check mark. Click the link below "Open
+     PredictiveMaintenanceAerospace.pbix in Power BI". To find detailed instructions, see [Publish from Power BI Desktop](https://support.powerbi.com/knowledgebase/articles/461278-publish-from-power-bi-desktop).
+   * To create a new dashboard: click the **+** sign next to the
+     **Dashboards** section on the left pane. Enter the name "Predictive
+     Maintenance Demo" for this new dashboard.
+   * Once you open the report, click ![PIN icon](Images/icon-pin.png) to pin all the
+     visualizations to your dashboard. To find detailed instructions, see [Pin a tile to a Power BI dashboard from a report](https://support.powerbi.com/knowledgebase/articles/430323-pin-a-tile-to-a-power-bi-dashboard-from-a-report).
+     Go to the dashboard page and
+     adjust the size and location of your visualizations and edit their titles. To find detailed instructions on how to edit your tiles, see [Edit a tile -- resize, move, rename, pin, delete, add hyperlink](https://powerbi.microsoft.com/documentation/powerbi-service-edit-a-tile-in-a-dashboard/#rename). Here is an example dashboard with some cold path visualizations pinned to it.  Depending on how long you run your data generator, your numbers on the visualizations may be different.
+     <br/>
+     ![Final view](Images/final-view.png)
+     <br/>
+   * To schedule refresh of the data, hover your mouse over the **PredictiveMaintenanceAerospace** dataset, click ![Elipsis icon](Images/icon-elipsis.png) and then choose **Schedule Refresh**.
+     <br/>
+     **Note:** If you see a warning massage, click **Edit Credentials** and make sure your database credentials are the same as those described in step 1.
+     <br/>
+     ![Schedule refresh](Images/schedule-refresh.png)
+     <br/>
+   * Expand the **Schedule Refresh** section. Turn on "keep your
+     data up-to-date".
+     <br/>
+   * Schedule the refresh based on your needs. To find more information, see
+     [Data refresh in Power BI](https://support.powerbi.com/knowledgebase/articles/474669-data-refresh-in-power-bi).
 
-1. Download and install the free software [Power BI desktop](https://powerbi.microsoft.com/documentation/powerbi-desktop-get-the-desktop/). In this solution, Power BI connects to the Azure SQL database (provisioned in Section 6) as its data source, where the prediction results are stored. You must successfully complete Section 6 to proceed in this section.
-2. Access to &quot;PredictiveMaintenanceAerospace.pbix&quot; in the &quot;Power BI template&quot; directory in the downloaded repository. This file contains some seed data so that you may create the Power BI dashboard right away.
-3. To setup Power BI dashboard in the hot path, you must have already completed Step 8 and successfully deployed the Datasets in Azure Data factory.
+### Setup hot path dashboard
+The following steps will guide you how to visualize real time data
+output from Stream Analytics jobs that were generated at the time of
+solution deployment. A [Power BI online](http://www.powerbi.com/)
+account is required to perform the following steps. If you don't have an
+account, you can [create one](https://powerbi.microsoft.com/pricing).
+
+1. Add Power BI output in Azure Stream Analytics (ASA).
+   
+   * You will need to follow the instructions in
+     [Azure Stream Analytics & Power BI: A real-time analytics dashboard for real-time visibility of streaming data](../stream-analytics/stream-analytics-power-bi-dashboard.md)
+     to set up the output of your Azure Stream Analytics job as your Power BI dashboard.
+   * The ASA query has three outputs which are **aircraftmonitor**, **aircraftalert**, and **flightsbyhour**. You can view the query by clicking on query tab. Corresponding to each of these tables, you will need to add an output to ASA. When you add the first output (*e.g.* **aircraftmonitor**) make sure the **Output Alias**, **Dataset Name** and **Table Name** are the same (**aircraftmonitor**). Repeat the steps to add outputs for **aircraftalert**, and **flightsbyhour**. Once you have added all three output tables and started the ASA job, you should get a confirmation message (*e.g.*, "Starting Stream Analytics job maintenancesa02asapbi succeeded").
+2. Log in to [Power BI online](http://www.powerbi.com)
+   
+   * On the left panel Datasets section in My Workspace, the
+     ***DATASET*** names **aircraftmonitor**, **aircraftalert**, and
+     **flightsbyhour** should appear.This is the streaming data you pushed from Azure Stream Analytics in the previous step.The dataset **flightsbyhour** may not show up at the same time as the other two datasets due to the nature of the SQL query behind it. However, it should show up after an hour.
+   * Make sure the ***Visualizations*** pane is open and is shown on the
+     right side of the screen.
+3. Once you have the data flowing into Power BI, you can start visualizing the streaming data.  You can create other dashboard tiles based on appropriate datasets. Depending on how long you run your data generator, your numbers on the visualizations may be different.
 
 
-### **Setup Dashboard for Cold path**
-<br>
-In the cold path data pipeline, the essential goal is to get the predictive RUL (remaining useful life) of each aircraft engine once it finishes a flight (cycle). The prediction result is updated every 3 hours for predicting the aircraft engines that have finished a flight over the past 3 hours.
+4. Here are some steps to create another tile –  the "Fleet View of Sensor 11 vs. Threshold 48.26" tile:
+   
+   * Click dataset **aircraftmonitor** on the left panel
+     Datasets section.
+   * Click the **Line Chart** icon.
+   * Click **Processed** in the **Fields** pane so that it shows under
+     "Axis" in the **Visualizations** pane.
+   * Click "s11" and "s11\_alert" so that they both appear
+     under "Values". Click the small arrow next to **s11** and
+     **s11\_alert**, change "Sum" to "Average".
+   * Click **SAVE** on the top and name the report "aircraftmonitor". The
+     report named "aircraftmonitor" will be shown in the **Reports**
+     section in the **Navigator** pane on the left.
+   * Click the **Pin Visual** icon on the top right corner of this
+     line chart. A "Pin to Dashboard" window may show up for you to
+     choose a dashboard. Select "Predictive Maintenance Demo", then
+     click "Pin".
+   * Hover the mouse over this tile on the dashboard, click the "edit"
+     icon on the top right corner to change its title to "Fleet View of
+     Sensor 11 vs. Threshold 48.26" and subtitle to "Average across fleet
+     over time".
 
-After you deploy the solution, a real prediction will show up in the database within 3 hours.
-
-Follow the steps below to connect pbix file to the SQL Database (containing prediction results) for visualization.
-
-Get the database credentials from SQL database table where you recorded the values in Section 6.
-
-You&#39;ll need database server name, database name, user name and password before moving to next steps. Update the data source of the cold path report file with Power BI Desktop.
-
-**1.** Double-click the Power BI Template\PredictiveMaintenanceAerospace.pbix file. If you see any warning messages when you open the file, ignore them. On the top of the file, click &#39;Edit Queries&#39;.
-
- ![pib1](Images/pbi1.png)
 
 
-You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click on ![pbi2](images/pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.<br>
-**2.**  In the pop out window, replace &#39;Server&#39; and &#39;Database&#39; with your own server and database names, and then click &#39;OK&#39;. For server name, make sure you specify the port 1433 (database.windows.net, 1433). Leave the Database field as pmaintenancedb. Ignore the warning messages that appear on the screen. <br>
-**3.** In the next pop out window, you&#39;ll see two options on the left pane (Windows and Database). Click &#39;Database&#39;, fill in &#39;Username&#39; and &#39;Password&#39; for the SQL Database.
+## 10.	Getting it all running
 
-If prompted for &quot;_level to apply these settings to&quot;_, check database level option. Click &#39;Connect&#39;. <br>
-**4.** For the second table PMResult click on ![pbi2](Images/pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right, and repeat steps 2 and 3. <br>
-**5.** Once you&#39;re guided back to the previous page, from the top menu select Close &amp; Apply.
-<br>**6.** Click File &gt; Save button to save the changes. <br> **7.** Visualize Seed Data: The Power BI file has now established connection to the server. If your visualizations are empty, make sure you clear the selections on the visualizations by clicking the eraser icon on the upper right corner of the legends.
+All of the components and services that are needed for the demo are now in place. It is time to start up the system to have the data flow through the services and produce results for the Power BI dashboard. 
 
-Use the refresh button to reflect new data on the visualizations. Initially, you will only see the seed data on your visualizations as the data factory is scheduled to refresh every 3 hours. After 3 hours, you will see new predictions reflected in your visualizations when you refresh the data. <br>
-**8.** Publish the cold path dashboard online: This step is optional and requires a Power BI online account (or Office 365 account). In the top menu, click &#39;Publish&#39; and few seconds later a message window appears confirming &quot;Publishing to Power BI Success!&quot; with a green check mark. In the message window, click the link &quot;Open PredictiveMaintenanceAerospace.pbix in Power BI&quot;. To find detailed instructions, see [Publish from Power BI Desktop.](https://powerbi.microsoft.com/en-us/documentation/powerbi-desktop-upload-desktop-files/)
+This takes a little time for the data to seed the blob storage, and the data factory, as noted, is scheduled to run every three hours. 
 
-**The following steps are to be executed in Power BI online (in My workspace):**
+This setup will also take care to limit the amount of time that the demo will run, and consequently, reduce the cost to your subscription. It is up to the reader to determine if they want the system to run longer.
 
-1. From the left menu panel, Click on &quot;My Workspace&quot; &gt; &quot;Reports&quot;. Select the report you just published.<br>
-2. Once you open the report, click ![pbi3](Images/pbi3.png)to pin all the visualizations to your dashboard. You may need to create new dashboard or select existing dashboard. To find detailed instructions, see [Pin a tile to a Power BI dashboard from a report](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-pin-a-tile-to-a-dashboard-from-a-report/).
-3. Go to the dashboard page and adjust the size and location of your visualizations and edit their titles. You can find detailed instructions on [how to edit your tiles here](https://powerbi.microsoft.com/en-us/documentation/powerbi-service-edit-a-tile-in-a-dashboard/#rename).
+### Data Generator
+Navigate to the package directory Predictive Maintenance Data Generator and start the Generator.exe application. From previous steps in this document the application should already be configured to send messages to the event hub. Click the Start button to start feeding events to the event hub.
 
-Below is an example dashboard with some cold path visualizations pinned to it. Depending on how long you run your data generator, your numbers on the visualizations may be different.
+|TIP|
+|---|
+|The data generator will only run when your laptop is on and has a network connection. It is possible when your laptop goes into "sleep" mode that the generator will stop running. To run this generator over a longer period of time it should be moved to an Azure Virtual Machine and executed there.| 
 
-![pbi4](Images/pbi4.png)
+### Stream Analytics
+The next thing to start is the stream analytics jobs.
+-	Navigate to ***portal.azure.com*** and login in to your account.
+-	On the left tab click ***Resource groups***
+-	Click the resource group created earlier ***aerospacetemplate_resourcegroup***
+-	Click on each stream analytics job and on the pane that appears, click the ***Start*** button at the top of the page.
 
-**4.** To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![pbi5](images/pbi5.png)and then choose Schedule Refresh.<br>
-**Note:** If you see a warning massage, click Edit Credentials and make sure your database credentials are the same as those used in Section 6 of this document.
-Expand the Schedule Refresh section. Turn on &quot;keep your data up-to-date&quot;. <br>
-**5.** Schedule the refresh based on your needs. To find more information, see [Data refresh in Power BI](https://powerbi.microsoft.com/en-us/documentation/powerbi-refresh-data/).
+### Data Factory
 
-### **Setup Dashboard for the Hot Path**
+The final step is to set an appropriate activity period for the data factory pipelines. This is simply to update the start and end timestamps for each pipeline as discussed in the Pipelines section.
 
-Pre-requisites:
+-	Navigate to ***portal.azure.com*** and login in to your account.
+-	On the left tab click ***Resource groups***
+-	Click the resource group created earlier ***aerospacetemplate_resourcegroup***
+-	Click on the data factory in the resource group
+-	Click ***Author and deploy***
+-	Expand the *Pipelines* node
+-	Modify each start and end with a time stamp starting at the current time and the end time for 6 hours later. 
+-	Click ***Deploy***
 
--  A [Power BI online](http://www.powerbi.com/) account is required to perform the following steps. If you don&#39;t have an account, you can [create one](https://powerbi.microsoft.com/pricing).
-- You have already completed Section 8, Deploy Azure Stream Analytics Jobs.
+Again, the activity period indicates how long the data factory will be in service. Limiting the number above to 6 hours will limit the expense to your subscription. However, is you do plan on deploying the generator to an Azure Virtual Machine to have a longer running demo, then adjust the activity period length accordingly. 
 
-Now we need to create tiles to visualize streaming data from the Stream Analytics jobs created in Section 8 of this solution deployment.
+### Validation and Results
 
-In [Power BI online](http://www.powerbi.com/), on the left panel, under &quot;My Workspace&quot; &gt; &quot;Dataset&quot;, the dataset names _aircraftmonitor_, _aircraftalert_, and _flightsbyhour_ should appear. The dataset _flightsbyhour_ may not show up at the same time as the other two datasets due to the nature of the SQL query behind it. However, it should show up after an hour.
+The Power BI dashboard initially has 12 values associated with it. These were placed into the database when we ran the script. Results from the pipeline will start to appear in just over 3 hours after starting the system up. You can ensure that the system is functioning as expected by verifying there are more results in the database table. 
 
-Make sure the **Visualizations** pane is open on the right side of the screen.
+However, if the table is not receiving results in approximately 3.5 hours after starting the services you can take the following steps to see where the issue might be, but also consider that the dashboards for the services update about every 15 minutes.
 
-When you start streaming, data using the generator, you&#39;ll see the input and output counters in ASA increment in the Azure portal dashboard. For the outputs linked to power BI, this data will stream into Power BI, and you can start visualizing the streaming data.
+1.	Log into ***manage.windowsazure.com***
+2.	Navigate to the event hub that was created and verify that it is receiving messages by viewing the dashboard.
+3.	Navigate to the stream analytics jobs that were created and verify that it is processing messages by viewing the dashboard.
+4.	Log into ***portal.azure.com***
+5.	Navigate to the event hub created
+6.	Navigate into the Datasets of the event hub and for each dataset view the Recently updated slices
 
-Depending on how long you run your data generator, your numbers on the visualizations may differ. You can create other dashboard tiles based on appropriate datasets to visualize the data.
+In the case of steps 2 and 3 above, you look into the operations logs for those services to 
+determine what errors, if any. 
 
-For example, to create a tile with title &quot;Fleet View of Sensor 11 vs. Threshold 48.26&quot; follow the steps as below:
-
-1.  On the left panel Dataset section, click on aircraftmonitor.
-2.  Select the line chart icon in the visualization panel.
-3.  In the Fields pane, check the box against &quot;processed&quot;, verify it gets added under &quot;Axis&quot; in the Visualizations pane.
-4.  In the Fields pane, check the boxes against &quot;s11&quot; and &quot;alerts&quot; so that they both appear under &quot;Values&quot;. In the dropdown list against &quot;s11&quot; and &quot;alerts&quot;, change the selection from &quot;Sum&quot; to &quot;Average&quot;.
-5.  Click &quot;Save&quot; on the top menu and name the report &quot;aircraftmonitor&quot;. This report will now get listed under the Reports section in the navigator panel.
-6.  From the top menu, click on &quot;Pin LIVE Page&quot;. In &quot;Pin to Dashboard&quot; dialog box, either create a new dashboard or select an existing dashboard, then click &quot;Pin Live&quot;.
-7.  Go to the dashboard to edit the title to &quot;Fleet View of Sensor 11 vs. Threshold 48.26&quot; and subtitle to &quot;Average across fleet over time&quot;.
-
-# Execute Solution and Validate
-
-All the components and services that are needed for the demo are now in place. It is time to start up the system to have the data flow through the services and produce results for the Power BI dashboard.
-
-It takes some time for the data to seed blob storage. The data factory, as noted earlier, is scheduled to run every three hours.
-
-This solution template has showed you how to customize the duration for which this runs, and consequently limit the expense to your subscription.
-
-## **Validate the Data Generation Path**
-
-To validate the data generation path, start the desktop data generator application and follow **the steps in section 6** of this guide to verify that both the event hub and ASA are receiving the streaming data.
-
-## **Validate the Data Factory**
-
-The final step is to set an appropriate activity period for the data factory pipelines. Modify each start and end with a time stamp starting at the current time and the end time for 6 hours later.
-
-Refer section 8 (Configuring Pipelines) to update the start and end timestamps for each pipeline.
-
-Again, the activity period indicates how long the data factory will be in service. Limiting the number above to 6 hours will limit the expense to your subscription. However, if you do plan on deploying the generator to an Azure Virtual Machine to have a longer running demo, then adjust the activity period length accordingly.
-
-## **Verifying Results**
-
-The Power BI dashboard initially has 12 values associated with it. These were placed into the database when we ran the script. Results from the pipeline will start to appear in just over 3 hours after starting the system up. You can ensure that the system is functioning as expected by verifying there are more results in the database table.
-
-However, if the table is not receiving results in approximately 3.5 hours after starting the services, you can take the following steps to see where the issue might be, but also consider that the dashboards for the services update about every 15 minutes.
-
-1. In Azure portal, navigate to the event hub that was created and verify that it is receiving messages by viewing the dashboard.
-2. Navigate to the stream analytics jobs that were created and verify that it is processing messages by viewing the dashboard.
-3. Navigate to the Datasets in the data factory and for each dataset view the Recently updated slices.
-4. In the case of steps 1 and 2 above, consider the operations logs for those services to determine what errors, if any.
-5. For step 3, it is expected that the first run of the pipeline will produce an error as there is no data to process when it is initially started. Later runs should run successfully and if not details of the failure can be determined by digging into the failed time slice.
-
-# Completion and Clean up
-
-After completing the solution and evaluating the results, to avoid further billing on your subscription, we recommend that you stop the data generator, ASA jobs. Clean up any ML experiments and Azure web services from ML Studio.
-
-Finally delete the resource group(s) you created to deploy this solution template. This will remove all Azure resources (services) provisioned under the resource groups.
+For case 6 it is expected that the first run of the pipeline will produce an error as there is no data 
+to process when it is initially started. Later runs should run successfully and if not details of the 
+failure can be determined by digging into the failed time slice.
+ 
