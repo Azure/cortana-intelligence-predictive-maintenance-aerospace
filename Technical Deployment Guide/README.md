@@ -473,7 +473,7 @@ You&#39;ll need database server name, database name, user name and password befo
  ![pib1](Images/pbi1.png)
 
 
-You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click on ![pbi2](images/pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.<br>
+You&#39;ll see two tables, RemainingUsefulLife and PMResult. Select the first table and click on ![pbi2](Images/pbi2.png)next to &#39;Source&#39; under &#39;APPLIED STEPS&#39; in &#39;Query Settings&#39; panel on the right. Ignore any warning messages that appear.<br>
 **2.**  In the pop out window, replace &#39;Server&#39; and &#39;Database&#39; with your own server and database names, and then click &#39;OK&#39;. For server name, make sure you specify the port 1433 (database.windows.net, 1433). Leave the Database field as pmaintenancedb. Ignore the warning messages that appear on the screen. <br>
 **3.** In the next pop out window, you&#39;ll see two options on the left pane (Windows and Database). Click &#39;Database&#39;, fill in &#39;Username&#39; and &#39;Password&#39; for the SQL Database.
 
