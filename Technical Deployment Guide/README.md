@@ -2,22 +2,22 @@
 
 # Table of Contents
 
-[Scope](#scope-1)
-[Pre-Requisites](#pre-requisites-1)
-[Architecture](#architecture-1)
-[Solution Setup](#solution-setup)
-[Section 1: Create a new Azure Resource Group](#section-1--create-a-new-azure-resource-group)
-[Section 2: Deploy Azure Storage Account](#section-2-deploy-azure-storage-account-1)
-[Section 3: Deploy Azure Event Hub](#section-3-deploy-azure-event-hub-1)
-[Section 4: Deploy Azure Stream Analytics Jobs](#section-4-deploy-azure-stream-analytics-jobs-1)
-[Section 5: Run Application to Generate Data](#section-5-run-application-to-generate-data-1)
-[Section 6: Validate the Data Generation Path](#section-6-validate-the-data-generation-path-1)
-[Section 7: Deploy Azure SQL Server and Database](#section-7-deploy-azure-sql-server-and-database-1)
-[Section 8: Deploy Azure Studio ML Workspace and Experiment](#section-8-deploy-azure-studio-ml-workspace-and-experiment-1)
-[Section 9: Deploy Azure Data Factory](#section-9-deploy-azure-data-factory-1)
-[Section 10: Configure Power BI for Visualization](#section-10-configure-power-bi-for-visualization-1)
-[Execute Solution and Validate](#execute-solution-and-validate-1)
-[Completion and Clean up](#completion-and-clean-up-1)
+- [Scope](#scope-1)
+- [Pre-Requisites](#pre-requisites-1)
+- [Architecture](#architecture-1)
+- [Solution Setup](#solution-setup)
+- [Section 1: Create a new Azure Resource Group](#section-1--create-a-new-azure-resource-group)
+- [Section 2: Deploy Azure Storage Account](#section-2-deploy-azure-storage-account-1)
+- [Section 3: Deploy Azure Event Hub](#section-3-deploy-azure-event-hub-1)
+- [Section 4: Deploy Azure Stream Analytics Jobs](#section-4-deploy-azure-stream-analytics-jobs-1)
+- [Section 5: Run Application to Generate Data](#section-5-run-application-to-generate-data-1)
+- [Section 6: Validate the Data Generation Path](#section-6-validate-the-data-generation-path-1)
+- [Section 7: Deploy Azure SQL Server and Database](#section-7-deploy-azure-sql-server-and-database-1)
+- [Section 8: Deploy Azure Studio ML Workspace and Experiment](#section-8-deploy-azure-studio-ml-workspace-and-experiment-1)
+- [Section 9: Deploy Azure Data Factory](#section-9-deploy-azure-data-factory-1)
+- [Section 10: Configure Power BI for Visualization](#section-10-configure-power-bi-for-visualization-1)
+- [Execute Solution and Validate](#execute-solution-and-validate-1)
+- [Completion and Clean up](#completion-and-clean-up-1)
 
 
 # Scope
