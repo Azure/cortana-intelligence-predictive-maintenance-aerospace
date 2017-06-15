@@ -42,15 +42,13 @@ To implement this demo, you need an active Microsoft Azure subscription [insert 
 
 Following are a list of accounts and software you will need to create this solution.
 
-Following are a list of accounts and software you will need to create this solution.
-
 1. [The full contents of Github file repository](https://github.com/Azure/cortana-intelligence-predictive-maintenance-aerospace) (download the zipped file).
-2. [A Studio ML account](http://studio.azureml.net)
+2. [Access to Azure ML Studio to run ML experiements](http://studio.azureml.net)
 3. A [Microsoft Office 365 subscription](https://login.live.com/) for Power BI access.
 4. [SQL Server Management Studio](https://msdn.microsoft.com/en-us/library/mt238290.aspx) or a similar tool to access a SQL server database.
-5. [Microsoft Azure Storage Explorer](http://storageexplorer.com/)
-6. [Power BI Desktop](https://powerbi.microsoft.com/en-us/desktop)
-7. Internet Access
+5. [Microsoft Azure Storage Explorer](http://storageexplorer.com/) or a similar tool to explore data in Azure storage.
+6. [Power BI Desktop](https://powerbi.microsoft.com/en-us/desktop) and A Microsoft Office 365 subscription to access [Power BI online](https://powerbi.microsoft.com/).
+
 
 # Architecture
 
@@ -156,7 +154,7 @@ Azure Event Hubs is a highly scalable service that can ingest millions of record
 
 This creates the Azure Event Hub we need to receive aircraft sensor readings. The Event Hub will be consumed by two Azure Stream Analytics jobs. To ensure processing of the hub is successful we need to create [consumer groups](https://azure.microsoft.com/en-us/documentation/articles/event-hubs-programming-guide/#event-consumers) on the hub.
 
-| Create Consumer Group | Click event hubaerodemo1\_EH &gt; In the menu panel select &quot;Consumer Group&quot; under Entities.Click &quot;+Consumer Group&quot; to add new consumer group, provide name: blobcg_._Repeat above step to add consumer group, name: pbicg  |
+| Create Consumer Group | Click event hubaerodemo1\_EH &gt; In the menu panel select &quot;Consumer Group&quot; under Entities.Click &quot;+Consumer Group&quot; to add new consumer group, provide name: blobcg.<br> Repeat above step to add consumer group, name: pbicg  |
 | --- | --- |
 
 <br>
@@ -165,7 +163,7 @@ The connection string and event hub name information will be needed to configure
 
 <br>
 
-| Get Connection String for Event hub namespace | **1.** In Event hub namespace &quot;aerodemo1&quot;, select &quot;Overview&quot; &gt; &quot;Connection Strings&quot;. **2.** This brings up the shared access policy window. Click policy &quot;RootManageSharedAccessKey&quot;, and copy the &quot;Connection string–primary key&quot; value. **3.** Record the connection string value in table 2: Azure Event Hub.
+| Get Connection String for Event hub namespace | **1.** In Event hub namespace &quot;aerodemo1&quot;, select &quot;Overview&quot; &gt; &quot;Connection Strings&quot;.<br> **2.** This brings up the shared access policy window. Click policy &quot;RootManageSharedAccessKey&quot;, and copy the &quot;Connection string–primary key&quot; value. <br>**3.** Record the connection string value in table 2: Azure Event Hub.
 | --- | --- |
 
 **Table 2: Azure Event Hub**
@@ -378,9 +376,9 @@ We will create two types of linked service Store and Compute.
 | Edit scripts for Azure Storage linked services | Replace the Connection String value in the two files &quot;StorageLinkedService\_Store.txt&quot; and &quot;HDInsightStorageLinkedService\_Store.txt&quot; with the connection string of the storage account aerodemo1 (created in Section 2). |
 | --- | --- |
 | Deploy Azure Store linked services | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New data store&quot; &gt; &quot;Azure storage&quot; will open a draft file. In the editor overwrite the content of the file with that of StorageLinkedService\_Store.txt. Click &quot;Deploy&quot;, wait for deployment to complete.Repeat above step for HDInsightStorageLinkedService\_Store.txt  |
-| Edit scripts for Azure SQL linked services | Replace the Connection String value in the file AzureSqlLinkedService\_Store.txt.with the connection string of the SQL database pmaintenancedb (refer table in Section 6). |
+| Edit scripts for Azure SQL linked services | Replace the Connection String value in the file AzureSqlLinkedService\_Store.txt.with the connection string of the SQL database pmaintenancedb (refer table in [Section 7](#section-7-deploy-azure-sql-server-and-database)). |
 | Deploy Azure SQL linked services | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New data store&quot; &gt; &quot;Azure SQL&quot; will open a draft file. In the editor overwrite the content of the file with that of AzureSqlLinkedService\_Store.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
-| Edit scripts for Azure Compute linked services for machine learning call | Replace the values in mlEndpoint and APLI key in the file AzuremlBatchEndpointBatchLocation\_Compute.txtwith Request URI and API Key values from the ML experiment (refer table in Section 7). |
+| Edit scripts for Azure Compute linked services for machine learning call | Replace the values in mlEndpoint and APLI key in the file AzuremlBatchEndpointBatchLocation\_Compute.txtwith Request URI and API Key values from the ML experiment (refer table in [Section 8](#section-8-deploy-azure-studio-ml-workspace-and-experiment)). |
 | Deploy Azure Compute linked services for machine learning call | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New Compute&quot; &gt; &quot;Azure ML&quot; will open a draft file. In the file editor overwrite the content of the file with that of AzuremlBatchEndpointBatchLocation\_Compute.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
 | Deploy Azure Compute linked services for on-demand HDInsight cluster | In Azure data factory aerodemo1 blade, &quot;Author and Deploy&quot; &gt; &quot;New Compute&quot; &gt; &quot;HDInsight Cluster&quot; will open a draft file. In the file editor overwrite the content of the file with that of HDInsightLinkedService\_Compute.txt. Click &quot;Deploy&quot;, wait for deployment to complete.  |
 
@@ -449,11 +447,11 @@ From the data factory blade,
 <br>
 This section describes how to set up Power BI dashboard to visualize your real-time data from Azure Stream Analytics (hot path), as well as batch prediction results from Azure machine learning (cold path).
 
-# Pre-requisites:
+#### Pre-requisites:
 
-1. Download and install the free software [Power BI desktop](https://powerbi.microsoft.com/documentation/powerbi-desktop-get-the-desktop/). In this solution, Power BI connects to the Azure SQL database (provisioned in Section 6) as its data source, where the prediction results are stored. You must successfully complete Section 6 to proceed in this section.
+1. Download and install the free software [Power BI desktop](https://powerbi.microsoft.com/documentation/powerbi-desktop-get-the-desktop/). In this solution, Power BI connects to the Azure SQL database [provisioned in Section 7](#section-7-deploy-azure-sql-server-and-database) as its data source, where the prediction results are stored. You must successfully complete [Section 7](#section-7-deploy-azure-sql-server-and-database) to proceed in this section.
 2. Access to &quot;PredictiveMaintenanceAerospace.pbix&quot; in the &quot;Power BI template&quot; directory in the downloaded repository. This file contains some seed data so that you may create the Power BI dashboard right away.
-3. To setup Power BI dashboard in the hot path, you must have already completed Step 8 and successfully deployed the Datasets in Azure Data factory.
+3. To setup Power BI dashboard in the hot path, you must have already completed [Section 9](#section-9-deploy-azure-data-factory) and successfully deployed the Datasets in Azure Data factory.
 
 
 ### **Setup Dashboard for Cold path**
@@ -464,7 +462,7 @@ After you deploy the solution, a real prediction will show up in the database wi
 
 Follow the steps below to connect pbix file to the SQL Database (containing prediction results) for visualization.
 
-Get the database credentials from SQL database table where you recorded the values in Section 6.
+Get the database credentials from SQL database table where you recorded the values in [Section 7](#section-7-deploy-azure-sql-server-and-database).
 
 You&#39;ll need database server name, database name, user name and password before moving to next steps. Update the data source of the cold path report file with Power BI Desktop.
 
@@ -496,7 +494,7 @@ Below is an example dashboard with some cold path visualizations pinned to it. D
 ![pbi4](Images/pbi4.png)
 
 **4.** To schedule refresh of the data, hover your mouse over PredictiveMaintenanceAerospace dataset. Click ![pbi5](Images/pbi5.png)and then choose Schedule Refresh.<br>
-**Note:** If you see a warning massage, click Edit Credentials and make sure your database credentials are the same as those used in Section 6 of this document.
+**Note:** If you see a warning massage, click Edit Credentials and make sure your database credentials are the same as those used in [Section 7](#section-7-deploy-azure-sql-server-and-database) of this document.
 Expand the Schedule Refresh section. Turn on &quot;keep your data up-to-date&quot;. <br>
 **5.** Schedule the refresh based on your needs. To find more information, see [Data refresh in Power BI](https://powerbi.microsoft.com/en-us/documentation/powerbi-refresh-data/).
 
@@ -505,9 +503,9 @@ Expand the Schedule Refresh section. Turn on &quot;keep your data up-to-date&quo
 Pre-requisites:
 
 -  A [Power BI online](http://www.powerbi.com/) account is required to perform the following steps. If you don&#39;t have an account, you can [create one](https://powerbi.microsoft.com/pricing).
-- You have already completed Section 8, Deploy Azure Stream Analytics Jobs.
+- You have already completed [Section 4](#section-4-deploy-azure-stream-analytics-jobs), Deploy Azure Stream Analytics Jobs.
 
-Now we need to create tiles to visualize streaming data from the Stream Analytics jobs created in Section 8 of this solution deployment.
+Now we need to create tiles to visualize streaming data from the Stream Analytics jobs created in [Section 4](#section-4-deploy-azure-stream-analytics-jobs) of this solution deployment.
 
 In [Power BI online](http://www.powerbi.com/), on the left panel, under &quot;My Workspace&quot; &gt; &quot;Dataset&quot;, the dataset names _aircraftmonitor_, _aircraftalert_, and _flightsbyhour_ should appear. The dataset _flightsbyhour_ may not show up at the same time as the other two datasets due to the nature of the SQL query behind it. However, it should show up after an hour.
 
@@ -537,13 +535,13 @@ This solution template has showed you how to customize the duration for which th
 
 ## **Validate the Data Generation Path**
 
-To validate the data generation path, start the desktop data generator application and follow **the steps in section 6** of this guide to verify that both the event hub and ASA are receiving the streaming data.
+To validate the data generation path, start the desktop data generator application and follow **the steps in [Section 6](#section-6-validate-the-data-generation-path)** of this guide to verify that both the event hub and ASA are receiving the streaming data.
 
 ## **Validate the Data Factory**
 
 The final step is to set an appropriate activity period for the data factory pipelines. Modify each start and end with a time stamp starting at the current time and the end time for 6 hours later.
 
-Refer section 8 (Configuring Pipelines) to update the start and end timestamps for each pipeline.
+Refer [Section 8](#section-8-deploy-azure-studio-ml-workspace-and-experiment) to update the start and end timestamps for each pipeline.
 
 Again, the activity period indicates how long the data factory will be in service. Limiting the number above to 6 hours will limit the expense to your subscription. However, if you do plan on deploying the generator to an Azure Virtual Machine to have a longer running demo, then adjust the activity period length accordingly.
 
