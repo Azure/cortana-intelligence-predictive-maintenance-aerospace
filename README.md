@@ -1,3 +1,9 @@
+# Important #
+
+This repository is not currently maintained and some of the manual steps include outdated information. 
+
+However, the overall architecture and the content in Solution Overview for Business Audiences are still valid. 
+
 # Getting Started #
 
 This solution package contains materials to help both technical and business audiences understand our predictive maintenance solution for the aerospace industry built on the [Cortana Intelligence Suite](https://www.microsoft.com/en-us/server-cloud/cortana-intelligence-suite/Overview.aspx).
